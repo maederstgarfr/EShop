@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EShop.Data.DTOs.Account
 {
-    public class MobileActivationDTO
+    public class MobileActivationDTO : CaptchaDTO
     {
         //کد فعال سازی شماره موبایل برای تایید شماره
         [Display(Name = "کد فعال سازی")]
@@ -16,6 +16,7 @@ namespace EShop.Data.DTOs.Account
         [MinLength(5, ErrorMessage = "{نمیتواند کمتر از {1} کاراکتر باشد {0")]
 
         public string ActivationCode { get; set; }
+        public string mobile { get; set; }
         //برای لاگین هم کد اکتیویت نیازه. و مقدار خالی هم میتونه بگیره پس اوکیه
         public string? ReturnURL { get; set; }
     }

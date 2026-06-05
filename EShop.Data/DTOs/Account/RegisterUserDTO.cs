@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EShop.Data.DTOs.Account
 {
-    public class RegisterUserDTO
+    public class RegisterUserDTO : CaptchaDTO
     {
         //حساب باز کردن کاربر با شماره تلفن
         [Display(Name ="شماره موبایل")]

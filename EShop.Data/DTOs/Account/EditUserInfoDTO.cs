@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EShop.Data.DTOs.Account
 {
-    public class EditUserInfoDTO
+    public class EditUserInfoDTO : CaptchaDTO
     {
         public long UserId { get; set; }
         //قابلیت تغییر و وارد کردن اطلاعات برای ثبت سفارش

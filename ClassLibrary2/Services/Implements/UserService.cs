@@ -122,6 +122,18 @@ namespace EShop.Application.Services.Implementations
             
         }
 
+        public async Task<bool> CheckMobileAuthorization(MobileActivationDTO dto)
+        {
+            var user = await GetUserByMobile(dto.mobile);
+            return dto.ActivationCode == user.MobileActivationNumber;
+
+        }
+
+        public async Task<User> GetUserByMobile(string mobile)
+        {
+            return await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.MobileNumber == mobile);
+        }
+
         #endregion
 
 
