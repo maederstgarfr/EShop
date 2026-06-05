@@ -1,0 +1,57 @@
+﻿ <!-- SLIDER (کدهای قبلی شما) -->
+<div class="slider">
+    <div class="slides" id="slides">
+        @{
+            var slidesList = new[]
+            {
+                    new { Title="Redmi Note 13", Desc="قدرت + قیمت عالی", Class="slide1" },
+                    new { Title="iPhone 15", Desc="تجربه اپل", Class="slide2" },
+                    new { Title="Galaxy S24", Desc="پرچمدار سامسونگ", Class="slide3" }
+                };
+        }
+
+        @foreach (var item in slidesList)
+        {
+            <div class="slide @item.Class">
+                <div>
+                    <h1>@item.Title</h1>
+                    <p>@item.Desc</p>
+                    <button class="btn">خرید</button>
+                </div>
+                <img src="https://via.placeholder.com/300">
+            </div>
+        }
+    </div>
+
+    <button class="arrow prev" onclick="prev()">❮</button>
+    <button class="arrow next" onclick="next()">❯</button>
+</div>
+
+<!-- PRODUCTS (کدهای قبلی شما) -->
+<div class="products">
+    <h2>محصولات</h2>
+
+    @{
+        var products = new[]
+        {
+                new { Name="iPhone", Price="50,000,000" },
+                new { Name="Samsung", Price="30,000,000" },
+                new { Name="Xiaomi", Price="15,000,000" }
+            };
+    }
+
+    <div class="grid">
+        @foreach (var p in products)
+        {
+            <div class="card">
+                <img src="https://via.placeholder.com/150">
+                <h3>@p.Name</h3>
+                <p>@p.Price</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="banner">
+    <img src="https://via.placeholder.com/1200x300">
+</div>

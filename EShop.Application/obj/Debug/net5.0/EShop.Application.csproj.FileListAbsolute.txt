@@ -1,0 +1,5 @@
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.csproj.AssemblyReference.cache
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.GeneratedMSBuildEditorConfig.editorconfig
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.AssemblyInfoInputs.cache
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.AssemblyInfo.cs
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.csproj.CoreCompileInputs.cache

@@ -1,0 +1,8 @@
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.csproj.AssemblyReference.cache
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.GeneratedMSBuildEditorConfig.editorconfig
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.AssemblyInfoInputs.cache
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.AssemblyInfo.cs
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.csproj.CoreCompileInputs.cache
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.MvcApplicationPartsAssemblyInfo.cache
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.RazorAssemblyInfo.cache
+E:\EShop source\EShop\EShop.Web\obj\Debug\net5.0\EShop.Web.RazorAssemblyInfo.cs
