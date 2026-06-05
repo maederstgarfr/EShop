@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using EShop.Data.Repository;
 using EShop.Application.Services;
 using EShop.Application.Services.Implementations;
+using EShop.Application.Services.Interfaces;
+using EShop.Application.Services.Implements;
 
 public class Startup
 {
@@ -21,9 +23,11 @@ public class Startup
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped(typeof(IGenericRipository<>), typeof(GenericRipository<>));
-            services.AddScoped<UserService, UserService>();
-            // استفاده از Configuration برای خواندن ConnectionString
-            services.AddDbContext<EShop.Data.Context.ApplicationDbContext>(options =>
+            services.AddScoped<IUserService, IUserService>();
+            services.AddScoped<ISmsService, SmsService>();
+
+        // استفاده از Configuration برای خواندن ConnectionString
+        services.AddDbContext<EShop.Data.Context.ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllersWithViews();

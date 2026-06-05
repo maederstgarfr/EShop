@@ -26,6 +26,6 @@ namespace EShop.Data.Repository
         // برای حذف چند مورد
         void DeleteEntites(List<TEntity> entity);
         Task SaveAsync();
-        Task AddEntity(object newUser);
+        
     }
 }

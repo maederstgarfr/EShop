@@ -11,13 +11,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Application.Services.Implementations
 {
-    public class UserService : IUserService
+    public class IUserService : Interfaces.IUserService
     {
         #region CTOR
         private readonly IGenericRipository<User> _userRepository;
-        private readonly ISMSService _SmsService;
+        private readonly ISmsService _SmsService;
 
-        public UserService(IGenericRipository<User> userRepository)
+        public IUserService(IGenericRipository<User> userRepository)
         {
             _userRepository = userRepository;
 
@@ -42,7 +42,7 @@ namespace EShop.Application.Services.Implementations
                 user.MobileActivationNumber = new Random().Next(10000, 99999).ToString();
                 _userRepository.EditEntity(user);
                 await _userRepository.SaveAsync();
-                await _SmsService.SendVerificationSMS(dto.MobileNumber, user.MobileActivationNumber);
+                await _SmsService.SendVerificationSms(dto.MobileNumber, user.MobileActivationNumber);
                 return RegisterOrLoginResult.Success;
             }
             else
@@ -54,7 +54,7 @@ namespace EShop.Application.Services.Implementations
                 };
                 await _userRepository.AddEntity(newUser);
                 await _userRepository.SaveAsync();
-                await _SmsService.SendVerificationSMS(dto.MobileNumber, newUser.MobileActivationNumber);
+                await _SmsService.SendVerificationSms(dto.MobileNumber, newUser.MobileActivationNumber);
                 return RegisterOrLoginResult.MobileInUse;
             }
             
@@ -67,9 +67,17 @@ namespace EShop.Application.Services.Implementations
 
 
 
-        public Task EditUserDetail(EditUserInfoDTO dto)
+        public async Task EditUserDetail(EditUserInfoDTO dto)
         {
-            throw new NotImplementedException();
+            var user = await  _userRepository.GetEntityById(dto.UserId);
+            user.Address = dto.Address;
+            user.Email = dto.Email;
+            user.FullName = dto.FullName;
+            user.PostCode = dto.PostCode;
+
+
+            _userRepository.EditEntity(user);
+            await _userRepository.SaveAsync();
         }
 
         public async Task<EditUserInfoDTO> GetEditUserDetail(long userId)
@@ -84,21 +92,34 @@ namespace EShop.Application.Services.Implementations
             };
         }
 
-        public Task<UserDetailDTO> GetUserDetail(long userId)
+        public async Task<UserDetailDTO> GetUserDetail(long userId)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetEntityById( userId);
+            return new UserDetailDTO
+            {
+                Id = userId,
+                Address = user.Address,
+                Email = user.Email,
+                FullName = user.FullName,
+                PostCode = user.PostCode,
+                MobileNumber = user.MobileNumber,
+                CreateDate = user.CreateDate,
+                LastUpdateDate = user.LastUpdateDate,
+                IsDeleted = user.IsDeleted,
+                MobileActivationNumber = user.MobileActivationNumber,
+            };
+
         }
 
-
-
-        public async Task<bool> SendActivationSMS(string mobile)
-        {
+        public async Task<bool> SendActivationSms(string mobile)
+        {   
             var user = await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.MobileNumber == mobile);
             if (user == null) return false;
 
             user.MobileActivationNumber = new Random().Next(10000, 99999).ToString();
-            await _SmsService.SendVerificationSMS(mobile, user.MobileActivationNumber);
+            await _SmsService.SendVerificationSms(mobile, user.MobileActivationNumber);
             return true;
+            
         }
 
         #endregion

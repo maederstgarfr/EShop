@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Bootstrap.v3.Datetimepicker" Version="4.17.49" />
     <PackageReference Include="Bootstrap.v3.Datetimepicker.CSS" Version="4.17.49" />
+    <PackageReference Include="Captcha" Version="4.4.2" />
     <PackageReference Include="GoogleReCaptcha.V3" Version="1.3.1" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.17" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.17" />	  
