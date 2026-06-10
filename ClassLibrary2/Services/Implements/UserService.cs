@@ -125,7 +125,9 @@ namespace EShop.Application.Services.Implementations
         public async Task<bool> CheckMobileAuthorization(MobileActivationDTO dto)
         {
             var user = await GetUserByMobile(dto.mobile);
-            return dto.ActivationCode == user.MobileActivationNumber;
+            if (user == null) return false;
+            var ActivationCode = $"{dto.ActivationCodePart1},{dto.ActivationCodePart2},{dto.ActivationCodePart3},{dto.ActivationCodePart4},{dto.ActivationCodePart5}";
+            return ActivationCode == user.MobileActivationNumber;
 
         }
 

@@ -10,12 +10,12 @@ namespace EShop.Data.DTOs.Account
     public class MobileActivationDTO : CaptchaDTO
     {
         //کد فعال سازی شماره موبایل برای تایید شماره
-        [Display(Name = "کد فعال سازی")]
-        [Required(ErrorMessage = "لطفا {.} را وارد کنید")]
-        [MaxLength(5, ErrorMessage = "{نمیتواند بیشتر از {1} کاراکتر باشد {0")]
-        [MinLength(5, ErrorMessage = "{نمیتواند کمتر از {1} کاراکتر باشد {0")]
+        public string ActivationCodePart1 { get; set; }
+        public string ActivationCodePart2 { get; set; }
+        public string ActivationCodePart3 { get; set; }
+        public string ActivationCodePart4 { get; set; }
+        public string ActivationCodePart5 { get; set; }
 
-        public string ActivationCode { get; set; }
         public string mobile { get; set; }
         //برای لاگین هم کد اکتیویت نیازه. و مقدار خالی هم میتونه بگیره پس اوکیه
         public string? ReturnURL { get; set; }

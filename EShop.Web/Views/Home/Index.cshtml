@@ -1,32 +1,4 @@
-﻿ <!-- SLIDER (کدهای قبلی شما) -->
-<div class="slider">
-    <div class="slides" id="slides">
-        @{
-            var slidesList = new[]
-            {
-                    new { Title="Redmi Note 13", Desc="قدرت + قیمت عالی", Class="slide1" },
-                    new { Title="iPhone 15", Desc="تجربه اپل", Class="slide2" },
-                    new { Title="Galaxy S24", Desc="پرچمدار سامسونگ", Class="slide3" }
-                };
-        }
-
-        @foreach (var item in slidesList)
-        {
-            <div class="slide @item.Class">
-                <div>
-                    <h1>@item.Title</h1>
-                    <p>@item.Desc</p>
-                    <button class="btn">خرید</button>
-                </div>
-                <img src="https://via.placeholder.com/300">
-            </div>
-        }
-    </div>
-
-    <button class="arrow prev" onclick="prev()">❮</button>
-    <button class="arrow next" onclick="next()">❯</button>
-</div>
-
+﻿
 <!-- PRODUCTS (کدهای قبلی شما) -->
 <div class="products">
     <h2>محصولات</h2>
@@ -52,6 +24,93 @@
     </div>
 </div>
 
+
+
+
+<!--hero-section-->
+
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-right"></div>
+        <div class="hero-content">
+            <h3>بیش از ده هزار کتاب صوتی و متنی</h3>
+            <p>کتاب های رایگان و پولی</p>
+            <button>ثبت نام</button>
+        </div>
+    </div>
+
+</section>
+
+<!--categories-section-->
+
+<section class="categories">
+    <h2 class="title-section">دسته‌بندی</h2>
+    <div class="category-boxes">
+
+        <a href="category.html?category=رمان" class="category-card">
+            <div class="icon"><i class="fas fa-book"></i></div>
+            <h3>رمان</h3>
+            <p>۱۲۰۰ کتاب</p>
+        </a>
+
+        <a href="category.html?category=کسب و کار"
+           class="category-card">
+            <div class="icon"><i class="fas fa-briefcase"></i></div>
+            <h3>کسب و کار</h3>
+            <p>۸۰۰ کتاب</p>
+        </a>
+
+        <a href="category.html?category=روانشناسی"
+           class="category-card">
+            <div class="icon"><i class="fas fa-brain"></i></div>
+            <h3>روانشناسی</h3>
+            <p>۹۵۰ کتاب</p>
+        </a>
+
+        <a href="category.html?category=آموزشی" class="category-card">
+            <div class="icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3>آموزشی</h3>
+            <p>۶۵۰ کتاب</p>
+        </a>
+
+        <a href="category.html?category=جنایی" class="category-card">
+            <div class="icon"><i class="fas fa-user-secret"></i></div>
+            <h3>جنایی</h3>
+            <p>۵۰۰ کتاب</p>
+        </a>
+    </div>
+</section>
+
+<!--children books section-->
+<section class="children">
+    <h2 class="title-section">کتاب های مخصوص کودکان و نوجوانان</h2>
+    <div class="slider-wrapper">
+        <button class="btn btn-prev" id="prevBtn" disabled>‹</button>
+        <div class="slider-container" id="slider">
+            <!-- کارت‌ها با JS ساخته می‌شوند -->
+        </div>
+        <button class="btn btn-next" id="nextBtn">›</button>
+    </div>
+</section>
+
+<!--auido books section-->
+<section class="hot-books-section">
+    <h2 class="title-section">داغ‌ترین کتاب‌های صوتی</h2>
+    <div class="books-grid" id="hotBooksGrid">
+        <!-- کتاب‌ها اینجا رندر می‌شوند -->
+    </div>
+</section>
+
+<!-- banner section-->
 <div class="banner">
-    <img src="https://via.placeholder.com/1200x300">
+    <div class="banner-container">
+        <div class="banner-img">
+            <img src="../assets/images/banner-1.jpg" />
+        </div>
+        <div class="banner-img">
+            <img src="../assets/images/banner-2.jpeg" />
+        </div>
+    </div>
 </div>

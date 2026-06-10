@@ -25,6 +25,7 @@ public class Startup
             services.AddScoped(typeof(IGenericRipository<>), typeof(GenericRipository<>));
             services.AddScoped<IUserService, IUserService>();
             services.AddScoped<ISmsService, SmsService>();
+            
 
         // استفاده از Configuration برای خواندن ConnectionString
         services.AddDbContext<EShop.Data.Context.ApplicationDbContext>(options =>
@@ -50,6 +51,9 @@ public class Startup
 
         app.UseStaticFiles();
         app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
 
         app.UseEndpoints(endpoints =>
         {

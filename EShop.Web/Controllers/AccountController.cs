@@ -36,16 +36,35 @@ namespace EShop.Web.Controllers
         public async Task<IActionResult> RegisterOrLogin(RegisterUserDTO dto)
         {
             var res = await _userService.RegisterOrLoginUser(dto);
-            return RedirectToAction("MobileAuthorization",new { returnUrl = dto.ReturnUrl });
+            return RedirectToAction("MobileAuthorization",new { returnUrl = dto.ReturnUrl , mobile= dto.MobileNumber });
         }
         #endregion
+        #region resend verification code
+        [HttpGet("resend-verification-code")]
+        public async Task<IActionResult> ResendVerificationCode(string mobileNumber)
+        {
 
-
+            var res=  await _userService.SendActivationSms(mobileNumber);
+            if (res) return RedirectToAction("MobileAuthorization");
+            TempData[ErrorMessage] = "کاربری یافت نشد";
+            return RedirectToAction("MobileAuthorization");
+        }
+        
+        #endregion
+        #region log out
+        [Route("log_out")]
+         public async Task<IActionResult> LogOut()
+         {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+         }
+        #endregion
         #region MobileAuthorization
         [HttpGet("authorization")]
-        public async Task<IActionResult> MobileAuthorization(string? returnUrl = null)
+        public async Task<IActionResult> MobileAuthorization( string mobile, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+            ViewData["Mobile"] = mobile;
             return View();
 
         }
@@ -101,5 +120,6 @@ namespace EShop.Web.Controllers
         }
 
         #endregion
+       
     }
 }
