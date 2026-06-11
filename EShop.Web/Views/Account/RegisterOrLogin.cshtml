@@ -28,9 +28,10 @@
                     <label for="phone">شماره تلفن:</label>
                     <input type="tel" id="phone" name="phone" placeholder="شماره تلفن خود را وارد کنید" required>
                 </div>
+                <input type="hidden" asp-for="Token" id="captchaInput" />
                 <div class="form-group">
                     <label for="verification-code">کد تأیید:</label>
-                    <input asp-for="" type="number" id="verification-code" name="verification-code" placeholder="کد پیامک شده را وارد کنید" required>
+                    <input asp-for="Token" type="number" id="verification-code" name="verification-code" placeholder="کد پیامک شده را وارد کنید" required>
                 </div>
                 <div class="button-group">
                     <button type="button" class="btn btn-send-code">ارسال کد</button>
@@ -48,6 +49,15 @@
         document.querySelector('.btn-send-code').addEventListener('click', function() {
             alert('کد تأیید به شماره شما ارسال شد!');
 
+        });
+    </script>
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+    <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["googleReCaptcha:SiteKey"]"></script>
+    <script>
+        grecaptcha.ready(function () {
+            window.grecaptcha.execute('@Configuration["googleReCaptcha:SiteKey"]', { action: 'home' }).then(function (token) {
+                $("#captchaInput").val(token);
+            });
         });
     </script>
 </body>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EShop.Application.Services.Interfaces
 {
-    public interface ISMSService
+    public interface ISmsService
     {
         Task SendVerificationSMS(string mobile, string code);
     }

@@ -3,3 +3,13 @@ E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.Gener
 E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.AssemblyInfoInputs.cache
 E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.AssemblyInfo.cs
 E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.csproj.CoreCompileInputs.cache
+E:\EShop source\EShop\EShop.Application\bin\Debug\net5.0\EShop.Application.deps.json
+E:\EShop source\EShop\EShop.Application\bin\Debug\net5.0\EShop.Application.dll
+E:\EShop source\EShop\EShop.Application\bin\Debug\net5.0\ref\EShop.Application.dll
+E:\EShop source\EShop\EShop.Application\bin\Debug\net5.0\EShop.Application.pdb
+E:\EShop source\EShop\EShop.Application\bin\Debug\net5.0\EShop.Data.dll
+E:\EShop source\EShop\EShop.Application\bin\Debug\net5.0\EShop.Data.pdb
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.csproj.CopyComplete
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.dll
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\ref\EShop.Application.dll
+E:\EShop source\EShop\EShop.Application\obj\Debug\net5.0\EShop.Application.pdb

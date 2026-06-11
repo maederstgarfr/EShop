@@ -3,42 +3,51 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using EShop.Data.Repository;
-using EShop.Application.Services;
 using EShop.Application.Services.Implementations;
 using EShop.Application.Services.Interfaces;
-using EShop.Application.Services.Implements;
 using System.IO;
 using Microsoft.AspNetCore.DataProtection;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using GoogleReCaptcha.V3.Interface;
+using GoogleReCaptcha.V3;
 
 public class Startup
 {
-    
-        public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-        // این متد برای تزریق سرویس‌هاست
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddScoped(typeof(IGenericRipository<>), typeof(GenericRipository<>));
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ISmsService, SmsService>();
-            var keyPath = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Auth"));
+    public IConfiguration Configuration { get; }
 
-            if (!keyPath.Exists)
-                keyPath.Create();
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+    // این متد برای تزریق سرویس‌هاست
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddScoped(typeof(IGenericRipository<>), typeof(GenericRipository<>));
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ISmsService, SmsService>();
+        services.AddHttpClient<ICaptchaValidator,GoogleReCaptchaValidator>();
 
-            services.AddDataProtection()
-                .PersistKeysToFileSystem(keyPath)
-                .SetApplicationName("ESop")
-                .SetDefaultKeyLifetime(TimeSpan.FromDays(7));
-            services.AddControllersWithViews();
+        // استفاده از Configuration برای خواندن ConnectionString
+        services.AddDbContext<EShop.Data.Context.ApplicationDbContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+        );
+
+        services.AddControllersWithViews();
+
+        var keyPath = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Auth"));
+
+        if (!keyPath.Exists)
+            keyPath.Create();
+
+        services.AddDataProtection()
+            .PersistKeysToFileSystem(keyPath)
+            .SetApplicationName("ESop")
+            .SetDefaultKeyLifetime(TimeSpan.FromDays(7));
+        services.AddControllersWithViews();
         services.AddAuthentication(options =>
         {
             options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -47,7 +56,7 @@ public class Startup
             options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
 
-        }).AddCookie(options=>
+        }).AddCookie(options =>
         {
             options.LoginPath = "/Login";
             options.LogoutPath = "/Log-out";
@@ -57,19 +66,7 @@ public class Startup
         });
 
 
-        }
-
-
-
-
-        // استفاده از Configuration برای خواندن ConnectionString
-        services.AddDbContext<EShop.Data.Context.ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddControllersWithViews();
-        }
-        // ...
-    
+    }
 
 
     // این متد برای تنظیمات Middleware (ترتیب اجرا) است

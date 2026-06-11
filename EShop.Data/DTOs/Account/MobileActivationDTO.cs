@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+#nullable enable
 namespace EShop.Data.DTOs.Account
 {
     public class MobileActivationDTO : CaptchaDTO

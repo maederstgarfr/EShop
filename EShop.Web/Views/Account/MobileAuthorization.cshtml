@@ -21,6 +21,8 @@
         <div class="form-wrapper">
             <h2>ورود به حساب کاربری</h2>
             <form id="login-form">
+                <input type="hidden" asp-for="Token" id="captchaInput" />
+                <input asp-for="mobile" value="@Mobile" />
                 <div class="form-group">
                     <label for="login-phone">شماره تلفن</label>
                     <input type="tel" id="login-phone" name="phone" placeholder="شماره تلفن خود را وارد کنید" required>
@@ -59,8 +61,55 @@
         </div>
     </div>
 
-    <!-- بخش footer سایت (اگر در home.html وجود دارد، می‌توانید اینجا هم کپی کنید) -->
-    <!-- <footer> ... </footer> -->
+    @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+    <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["googleReCaptcha:SiteKey"]"></script>
+    <script>
+        grecaptcha.ready(function () {
+            window.grecaptcha.execute('@Configuration["googleReCaptcha:SiteKey"]', { action: 'home' }).then(function (token) {
+                $("#captchaInput").val(token);
+            });
+        });
+    </script>
 
+
+    <script>
+        document.addEventListener('DOMContentLeader', function () {
+            const inputs = document.querySelectorAll('#otp-input input[type="number"]');
+            const hiddenOtpInput = document.getElementById('otp-value');
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', function () {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    if (this.value.length === 1 && index < inputs.length - 1) {
+                        input[index + 1].focus();
+                    }
+                    updateOtpValue();
+                });
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'backspace' && this.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+                input.addEventListener('paste', function (e) {
+                    const pasteData = e.clipboardData.getData('text').trim();
+                    if (/^\d{5}$/.test(pasteData)) {
+                        for (let i = 0; i < inputs.length; i++) {
+                            input[i].value = pasteData[i];
+                        }
+                        inputs[inputs.length - 1].focus();
+                        updateOtpValue();
+                    }
+                    e.preventDefault();
+                });
+            });
+            function updateOtpValue() {
+                let otp = '';
+                inputs.forEach(input => {
+                    opt += input.value;
+                });
+                hiddenOtpInput.value = otp;
+            }
+        });
+    </script>
 </body>
 </html>

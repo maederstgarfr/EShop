@@ -45,29 +45,13 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
-            "Kavenegar": {
+            "IPE.SmsIr": {
               "target": "Package",
-              "version": "[1.2.5, )"
-            },
-            "KavenegarDotNetCore": {
-              "target": "Package",
-              "version": "[1.0.7, )"
-            },
-            "LazZiya.ImageResize": {
-              "target": "Package",
-              "version": "[4.1.4, )"
-            },
-            "Microsoft.AspNetCore.Http": {
-              "target": "Package",
-              "version": "[2.3.10, )"
+              "version": "[1.2.7, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.4, )"
-            },
-            "SixLabors.ImageSharp": {
-              "target": "Package",
-              "version": "[4.0.0, )"
             }
           },
           "imports": [
@@ -126,6 +110,10 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "IPE.SmsIr": {
+              "target": "Package",
+              "version": "[1.2.7, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[5.0.17, )"

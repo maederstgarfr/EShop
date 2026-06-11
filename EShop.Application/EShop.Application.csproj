@@ -5,15 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kavenegar" Version="1.2.5" />
-    <PackageReference Include="LazZiya.ImageResize" Version="4.1.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.10" />
+    <PackageReference Include="IPE.SmsIr" Version="1.2.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EShop.Data\EShop.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="IPE.SmsIrClient">
+      <HintPath>C:\Users\M\Desktop\IPE.SmsIrClient.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

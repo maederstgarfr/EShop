@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using EShop.Application.Services.Implementations;
+using EShop.Application.Services.Interfaces;
 using EShop.Data.DTOs.Account;
 using GoogleReCaptcha.V3.Interface;
 using Microsoft.AspNetCore.Authentication;
@@ -35,7 +36,7 @@ namespace EShop.Web.Controllers
         [HttpPost("register"), ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterOrLogin(RegisterUserDTO dto)
         {
-            var res = await _userService.RegisterOrLoginUser(dto);
+            await _userService.RegisterOrLoginUser(dto);
             return RedirectToAction("MobileAuthorization",new { returnUrl = dto.ReturnUrl , mobile= dto.MobileNumber });
         }
         #endregion
@@ -43,10 +44,7 @@ namespace EShop.Web.Controllers
         [HttpGet("resend-verification-code")]
         public async Task<IActionResult> ResendVerificationCode(string mobileNumber)
         {
-
-            // var res=  await _userService.SendActivationSms(mobileNumber);
-           // if (res) return RedirectToAction("MobileAuthorization");
-            TempData[ErrorMessage] = "کاربری یافت نشد";
+            await _userService.SendActivationSMS(mobileNumber);
             return RedirectToAction("MobileAuthorization");
         }
         
@@ -71,14 +69,12 @@ namespace EShop.Web.Controllers
         [HttpPost("authorization"), ValidateAntiForgeryToken]
         public async Task<IActionResult> MobileAuthorization(MobileActivationDTO dto)
         {
-            #region Captcha Validation
-            if(!await _captchaValidator.IsCaptchaPassedAsync(dto.Token))
+            if (!await _captchaValidator.IsCaptchaPassedAsync(dto.Token))
             {
-                TempData[ErrorMessage] = "اعتبار سنجی کپتجا با موفقیت انجام نشد،لطفا vpn را خاموش کنید";
+                TempData[ErrorMessage] = "اعتبار سنجی کپتچا با موفقیت انجام نشد، لطفا vpn را خاموش کنید";
                 return View(dto);
             }
-            #endregion
-            //اگراطلاعات و هم کپتچا درست وارد بشه این کارارو بکنه اگر نه دوباره تکرار بشه
+
             if (ModelState.IsValid)
             {
                 var res = await _userService.CheckMobileAuthorization(dto);
@@ -87,39 +83,34 @@ namespace EShop.Web.Controllers
                     TempData[ErrorMessage] = "کد اعتبار سنجی صحیح نمی باشد";
                     return View(dto);
                 }
+
                 var user = await _userService.GetUserByMobile(dto.mobile);
                 if (user == null) return NotFound();
+
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name,user.MobileNumber),
-                    new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                    
-                };
-                var identitiy = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identitiy);
-                var properties = new AuthenticationProperties
-                {
-                    IsPersistent = true
-                    
-                };
+        {
+            new Claim(ClaimTypes.Name, user.MobileNumber.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+                var properties = new AuthenticationProperties { IsPersistent = true };
+
                 await HttpContext.SignInAsync(principal, properties);
                 TempData[SuccessMessage] = "خوش آمدید!";
-                if (string.IsNullOrEmpty(dto.ReturnURL) && Url.IsLocalUrl(dto.ReturnURL))
-                {
-                    return Redirect(dto.ReturnURL);
-                }
-                else
-                {
-                    return RedirectToAction("Index","Home");
-                }
 
+                if (!string.IsNullOrEmpty(dto.ReturnURL) && Url.IsLocalUrl(dto.ReturnURL))
+                    return Redirect(dto.ReturnURL);
+
+                return RedirectToAction("Index", "Home");
             }
+
             TempData[ErrorMessage] = "لطفا خطاهای زیر را رفع کنید.";
             return View(dto);
-
         }
 
         #endregion
-       
+
     }
 }

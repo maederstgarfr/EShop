@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EShop.Application.Services.Interfaces;
 using EShop.Data.DTOs.Account;
@@ -15,11 +12,12 @@ namespace EShop.Application.Services.Implementations
     {
         #region CTOR
         private readonly IGenericRipository<User> _userRepository;
-        private readonly ISMSService _SmsService;
+        private readonly ISmsService _SmsService;
 
-        public UserService(IGenericRipository<User> userRepository)
+        public UserService(IGenericRipository<User> userRepository, ISmsService SmsService)
         {
             _userRepository = userRepository;
+            _SmsService = SmsService;
 
         }
         public async ValueTask DisposeAsync()
@@ -41,6 +39,7 @@ namespace EShop.Application.Services.Implementations
                 _userRepository.EditEntity(user);
                 await _userRepository.SaveAsync();
                 await _SmsService.SendVerificationSMS(dto.MobileNumber, user.MobileActivationNumber);
+                return;
             }
             var newUser = new User
             {
@@ -84,11 +83,11 @@ namespace EShop.Application.Services.Implementations
             var user = await _userRepository.GetEntityById(userId);
             return new EditUserInfoDTO
             {
-                UserId=userId,
-                Address=user.Address,
-                Email= user.Email,
-                FullName=user.FullName,
-                PostCode=user.PostCode
+                UserId = userId,
+                Address = user.Address,
+                Email = user.Email,
+                FullName = user.FullName,
+                PostCode = user.PostCode
             };
         }
 
@@ -106,18 +105,42 @@ namespace EShop.Application.Services.Implementations
                 CreateDate = user.CreateDate,
                 LastUpdateDate = user.LastUpdateDate,
                 IsDeleted = user.IsDeleted,
-                MobileActivationNumber=user.MobileActivationNumber
+                MobileActivationNumber = user.MobileActivationNumber
             };
         }
-       
+
         public async Task<bool> SendActivationSMS(string mobile)
         {
             var user = await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.MobileNumber == mobile);
             if (user == null) return false;
 
             user.MobileActivationNumber = new Random().Next(10000, 99999).ToString();
-            await _SmsService.SendVerificationSMS(mobile,user.MobileActivationNumber);
+            await _SmsService.SendVerificationSMS(mobile, user.MobileActivationNumber);
             return true;
+
+        }
+
+        public async Task<bool> CheckMobileAuthorization(MobileActivationDTO dto)
+        {
+            var user = await GetUserByMobile(dto.mobile);
+            if (user == null) return false;
+
+            // چون ActivationCode نداری، باید ۵ پارت رو کنار هم بذاری
+            var enteredCode = dto.ActivationCodePart1
+                            + dto.ActivationCodePart2
+                            + dto.ActivationCodePart3
+                            + dto.ActivationCodePart4
+                            + dto.ActivationCodePart5;
+
+            return enteredCode == user.MobileActivationNumber;
+        }
+
+
+
+
+        public async Task<User> GetUserByMobile(string mobile)
+        {
+            return await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.MobileNumber == mobile);
         }
 
         #endregion

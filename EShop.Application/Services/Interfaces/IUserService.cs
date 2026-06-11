@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EShop.Data.DTOs.Account;
+using EShop.Data.Entities.Account;
 
 namespace EShop.Application.Services.Interfaces
 {
@@ -16,6 +14,8 @@ namespace EShop.Application.Services.Interfaces
         Task EditUserDetail(EditUserInfoDTO dto);
         Task<UserDetailDTO> GetUserDetail(long userId);
         Task<bool> SendActivationSMS(string mobile);
+        Task<bool> CheckMobileAuthorization(MobileActivationDTO dto);
+        Task<User> GetUserByMobile(string mobile);
 
         #endregion
     }
