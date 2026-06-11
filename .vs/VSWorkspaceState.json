@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\EShop.Application",
+    "\\EShop.Application\\Services",
+    "\\EShop.Application\\Services\\Implementations",
+    "\\EShop.Data",
+    "\\EShop.Web"
+  ],
+  "SelectedNode": "\\EShop.Application\\EShop.Application.csproj",
+  "PreviewInSolutionExplorer": false
+}

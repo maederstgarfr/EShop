@@ -1,0 +1,118 @@
+
+#category-title {
+  font-size: 24px;
+  color: #333;
+  margin: 40px 30px;
+  font-weight: 500;
+}
+
+#books-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.category-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    position: relative;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #bd1e1e 0%, #940000 100%);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.category-header::before {
+    content: "";
+    position: absolute;
+    width: 120%;
+    height: 50%;
+    top: -10%;
+    left: -10%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+}
+
+.category-header h3 {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 1;
+    position: relative;
+}
+
+.category-header h3::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #fff;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.book {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #fefefe, #e6e6ff);
+  padding: 20px;
+  width: 240px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.book::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 70%);
+  transform: rotate(25deg);
+  transition: all 0.4s ease;
+}
+
+.book:hover {
+  transform: translateY(-10px) rotate(-1deg);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+
+.book img {
+  width: 180px;
+  height: 260px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.book h3 {
+  font-size: 20px;
+  margin: 10px 0 5px;
+  color: #333;
+  text-align: center;
+  font-weight: 600;
+}
+
+.book p {
+  margin: 5px 0;
+  color: #555;
+  font-size: 14px;
+  text-align: justify;
+  line-height: 1.5;
+}
+
+

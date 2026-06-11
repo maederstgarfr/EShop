@@ -1,0 +1,275 @@
+﻿/* استایل‌های سفارشی برای صفحه ورود/ثبت‌نام */
+.container {
+    display: flex; /* استفاده از Flexbox برای قرار دادن فرم‌ها کنار هم */
+    justify-content: center; /* وسط چین کردن محتوا */
+    align-items: flex-start; /* چسباندن به بالای صفحه */
+    gap: 2rem; /* فاصله بین دو فرم */
+    padding: 3rem 1rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    background-color: #fff; /* یا رنگ پس‌زمینه مورد نظر */
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-wrapper {
+    flex: 1; /* هر فرم نصف فضا را بگیرد */
+    max-width: 450px; /* حداکثر عرض برای هر فرم */
+    padding: 2rem;
+    background-color: var(--light-gray, #f5f5f5); /* استفاده از رنگ روشن */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+    .form-wrapper h2 {
+        text-align: center;
+        color: var(--primary-color, #b60000);
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+    }
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-color, #333);
+        font-weight: bold;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="password"],
+    .form-group input[type="tel"] { /* برای شماره تلفن */
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        box-sizing: border-box; /* اطمینان از اینکه padding و border در عرض لحاظ شوند */
+    }
+
+/* استایل دکمه که قبلاً تعریف کردیم */
+.auth-btn {
+    display: block; /* برای اینکه کل عرض را بگیرد */
+    width: 100%;
+    padding: 0.8rem 1.5rem; /* کمی کوچکتر از مثال قبل */
+    background-color: var(--primary-color, #b60000);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-top: 1.5rem; /* فاصله از فیلدها */
+}
+
+    .auth-btn:hover {
+        background-color: var(--secondary-color, #881111);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(182, 0, 0, 0.25);
+    }
+
+    /* استایل دکمه غیرفعال */
+    .auth-btn:disabled {
+        background-color: #999;
+        cursor: default;
+        transform: none;
+        box-shadow: none;
+    }
+
+/* استایل ریسپانسیو */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* در صفحات کوچک، فرم‌ها زیر هم قرار بگیرند */
+        align-items: center;
+    }
+
+    .form-wrapper {
+        width: 90%; /* عرض بیشتر در صفحات کوچک */
+        max-width: none;
+        margin-bottom: 2rem;
+    }
+}
+:root {
+    --primary-color: #b60000;
+    --secondary-color: #881111;
+    --accent-color: #333333;
+    --background-color: #f5f5f5;
+    --text-color: #333333;
+    --white-color: #ffffff;
+}
+
+body {
+    font-family: 'Tanha', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--accent-color);
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.nav-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+    .nav-link:hover {
+        color: var(--primary-color);
+    }
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.card-panel {
+    background-color: var(--white-color);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+    .card-panel h2 {
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        font-size: 28px;
+    }
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="tel"],
+    .form-group input[type="number"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+        font-family: 'Tanha', sans-serif;
+    }
+
+    .form-group input::placeholder {
+        color: #aaa;
+    }
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Tanha', sans-serif;
+    width: 100%;
+}
+
+.btn-send-code {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+}
+
+    .btn-send-code:hover {
+        background-color: var(--primary-color);
+    }
+
+.btn-verify {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+
+    .btn-verify:hover {
+        background-color: var(--secondary-color);
+    }
+
+.explanatory-text {
+    font-size: 14px;
+    color: #666;
+    margin-top: 20px;
+}
+
+/* Font import (if Tanha font is not globally available) */
+@font-face {
+    font-family: 'Tanha';
+    src: url('path/to/your/tanha-font.woff2') format('woff2'), url('path/to/your/tanha-font.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+/* If the font is not available via @font-face, you might need to link it in a real scenario */
+/* For this self-contained example, assuming a fallback or available font */
+body {
+    font-family: 'Tanha', 'Arial', sans-serif; /* Fallback included */
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+    }
+
+    .card-panel {
+        padding: 30px;
+    }
+
+        .card-panel h2 {
+            font-size: 24px;
+        }
+}

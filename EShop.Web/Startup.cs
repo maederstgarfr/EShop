@@ -9,6 +9,10 @@ using EShop.Application.Services;
 using EShop.Application.Services.Implementations;
 using EShop.Application.Services.Interfaces;
 using EShop.Application.Services.Implements;
+using System.IO;
+using Microsoft.AspNetCore.DataProtection;
+using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 public class Startup
 {
@@ -23,9 +27,40 @@ public class Startup
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped(typeof(IGenericRipository<>), typeof(GenericRipository<>));
-            services.AddScoped<IUserService, IUserService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISmsService, SmsService>();
-            
+            var keyPath = new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Auth"));
+
+            if (!keyPath.Exists)
+                keyPath.Create();
+
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(keyPath)
+                .SetApplicationName("ESop")
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(7));
+            services.AddControllersWithViews();
+        services.AddAuthentication(options =>
+        {
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+
+        }).AddCookie(options=>
+        {
+            options.LoginPath = "/Login";
+            options.LogoutPath = "/Log-out";
+            options.ExpireTimeSpan = TimeSpan.FromDays(7);
+            options.SlidingExpiration = true;
+
+        });
+
+
+        }
+
+
+
 
         // استفاده از Configuration برای خواندن ConnectionString
         services.AddDbContext<EShop.Data.Context.ApplicationDbContext>(options =>

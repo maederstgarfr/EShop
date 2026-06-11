@@ -1,0 +1,189 @@
+/* ---------- کارت جزئیات کتاب ---------- */
+.details-card {
+  display: flex;
+  gap: 25px;
+  background: linear-gradient(145deg, #ffffff, #f2f2ff);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  max-width: 900px;
+  margin: 50px auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.details-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+}
+
+.book-image {
+  width: 220px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.info {
+  flex: 1;
+}
+
+.title {
+  margin-top: 0;
+  font-size: 30px;
+  color: #1c1c1c;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.stars {
+  color: #f1c40f;
+  font-size: 22px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.price {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #e74c3c;
+}
+
+/* ---------- کتاب‌های مرتبط ---------- */
+.related-list-header{
+  text-align: center;
+  font-weight: 500;
+  font-size: 32px;
+}
+.related-list {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 900px;
+  margin: 20px auto 50px auto;
+}
+
+.related-card {
+  background: linear-gradient(145deg, #ffffff, #f9f9ff);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  padding: 12px;
+  width: 150px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.related-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+}
+
+.related-card img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.related-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.related-card:hover .related-title {
+  color:linear-gradient(from right to left #bd1e1e, #940000);
+}
+
+/* ---------- دکمه‌ها ---------- */
+.add-to-cart-btn, .checkout-btn {
+  background: linear-gradient(90deg, #bd1e1e, #940000);
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-to-cart-btn:hover, .checkout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* ---------- کنترل تعداد و حذف ---------- */
+.quantity-control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.increase-btn, .decrease-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.increase-btn { background-color: #45a049; }
+.decrease-btn { background-color: #cc0000; }
+
+.increase-btn:hover, .decrease-btn:hover { background-color: #888; }
+
+.remove-btn {
+  background-color: #770101;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover { background-color: #cc0000; }
+
+/* ---------- ریسپانسیو ---------- */
+@media (max-width: 768px) {
+  .details-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .book-image {
+    width: 80%;
+    max-width: 280px;
+    margin-bottom: 15px;
+  }
+
+  .title { font-size: 24px; }
+  .price { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+  .title { font-size: 20px; }
+  .price { font-size: 20px; }
+
+  .related-card { width: 120px; padding: 10px; }
+  .related-title { font-size: 13px; }
+  .add-to-cart-btn, .checkout-btn { font-size: 13px; padding: 10px 18px; }
+}

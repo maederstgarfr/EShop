@@ -1,9 +1,66 @@
 ﻿@model EShop.Data.DTOs.Account.MobileActivationDTO
-@{ 
+@{
     ViewData["Title"] = "اعتبار سنجی شماره موبایل";
     var Mobile = (string)ViewData["Mobile"];
     Layout = null;
 }
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <partial name="_SiteMetaTags" />
+    <partial name="_SiteHeaderRef" />
+    <title>ورود / ثبت‌نام</title>
 
-// کد های مربوط به تایید شماره تلفن باکد اینجا قرار میگیره. کد فرانت
 
+</head>
+<body>
+
+
+    <div class="container">
+        <!-- فرم ورود -->
+        <div class="form-wrapper">
+            <h2>ورود به حساب کاربری</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-phone">شماره تلفن</label>
+                    <input type="tel" id="login-phone" name="phone" placeholder="شماره تلفن خود را وارد کنید" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-code">کد تایید</label>
+                    <input type="text" id="login-code" name="code" placeholder="کد ارسالی را وارد کنید" required>
+                    <!-- می توانید اینجا دکمه دریافت کد را هم اضافه کنید -->
+                </div>
+                <button type="submit" class="auth-btn">ورود</button>
+            </form>
+        </div>
+
+        <!-- فرم ثبت نام -->
+        <div class="form-wrapper">
+            <h2>ثبت نام</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">نام و نام خانوادگی</label>
+                    <input type="text" id="register-name" name="name" placeholder="نام و نام خانوادگی خود را وارد کنید" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-phone">شماره تلفن</label>
+                    <input type="tel" id="register-phone" name="phone" placeholder="شماره تلفن خود را وارد کنید" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">ایمیل (اختیاری)</label>
+                    <input type="email" id="register-email" name="email" placeholder="example@domain.com">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">رمز عبور</label>
+                    <input type="password" id="register-password" name="password" placeholder="رمز عبور قوی انتخاب کنید" required>
+                </div>
+                <button type="submit" class="auth-btn">ثبت نام</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- بخش footer سایت (اگر در home.html وجود دارد، می‌توانید اینجا هم کپی کنید) -->
+    <!-- <footer> ... </footer> -->
+
+</body>
+</html>

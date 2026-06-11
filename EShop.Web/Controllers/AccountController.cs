@@ -44,8 +44,8 @@ namespace EShop.Web.Controllers
         public async Task<IActionResult> ResendVerificationCode(string mobileNumber)
         {
 
-            var res=  await _userService.SendActivationSms(mobileNumber);
-            if (res) return RedirectToAction("MobileAuthorization");
+            // var res=  await _userService.SendActivationSms(mobileNumber);
+           // if (res) return RedirectToAction("MobileAuthorization");
             TempData[ErrorMessage] = "کاربری یافت نشد";
             return RedirectToAction("MobileAuthorization");
         }

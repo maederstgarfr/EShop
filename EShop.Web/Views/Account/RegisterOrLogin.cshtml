@@ -1,9 +1,54 @@
 ﻿@model EShop.Data.DTOs.Account.RegisterUserDTO
-@{ 
+@{
     ViewData["Title"] = "ورود / ثبت نام";
     Layout = null;
 }
 
 
-// کد های صفحه لاگین و رجیستر
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود/ثبت نام</title>
+</head>
+<body>
+    <header class="header">
+        <a href="home.html" class="logo">نام سایت</a>
+        <nav>
+            <a href="home.html" class="nav-link">صفحه اصلی</a>
+        </nav>
+    </header>
 
+    <main class="main-content">
+        <div class="card-panel">
+            <h2>ورود یا ثبت نام</h2>
+            <form id="loginRegisterForm" asp-area="" asp-controller="Acount" asp-action="" method="post">
+                <div class="form-group">
+                    <label for="phone">شماره تلفن:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="شماره تلفن خود را وارد کنید" required>
+                </div>
+                <div class="form-group">
+                    <label for="verification-code">کد تأیید:</label>
+                    <input asp-for="" type="number" id="verification-code" name="verification-code" placeholder="کد پیامک شده را وارد کنید" required>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="btn btn-send-code">ارسال کد</button>
+                    <button type="button" class="btn btn-verify" onclick="window.location.href='home.html'">ورود به صفحه خانه</button>
+                </div>
+            </form>
+            <p class="explanatory-text">
+                با وارد کردن شماره تلفن خود، یک کد تأیید دریافت خواهید کرد. این کد را در کادر مربوطه وارد کرده و سپس برای ورود به حساب کاربری خود اقدام نمایید.
+            </p>
+        </div>
+    </main>
+
+    <script>
+
+        document.querySelector('.btn-send-code').addEventListener('click', function() {
+            alert('کد تأیید به شماره شما ارسال شد!');
+
+        });
+    </script>
+</body>
+</html>

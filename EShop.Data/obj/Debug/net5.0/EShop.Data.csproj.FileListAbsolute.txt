@@ -4,7 +4,6 @@ E:\EShop source\EShop\EShop.Data\bin\Debug\net5.0\EShop.Data.runtimeconfig.dev.j
 E:\EShop source\EShop\EShop.Data\bin\Debug\net5.0\EShop.Data.dll
 E:\EShop source\EShop\EShop.Data\bin\Debug\net5.0\ref\EShop.Data.dll
 E:\EShop source\EShop\EShop.Data\bin\Debug\net5.0\EShop.Data.pdb
-E:\EShop source\EShop\EShop.Data\obj\Debug\net5.0\EShop.Data.csproj.AssemblyReference.cache
 E:\EShop source\EShop\EShop.Data\obj\Debug\net5.0\EShop.Data.GeneratedMSBuildEditorConfig.editorconfig
 E:\EShop source\EShop\EShop.Data\obj\Debug\net5.0\EShop.Data.AssemblyInfoInputs.cache
 E:\EShop source\EShop\EShop.Data\obj\Debug\net5.0\EShop.Data.AssemblyInfo.cs
