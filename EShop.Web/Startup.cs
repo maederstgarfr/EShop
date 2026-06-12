@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using GoogleReCaptcha.V3.Interface;
 using GoogleReCaptcha.V3;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 public class Startup
 {
@@ -30,6 +32,8 @@ public class Startup
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ISmsService, SmsService>();
         services.AddHttpClient<ICaptchaValidator,GoogleReCaptchaValidator>();
+        services.AddSingleton<HtmlEncoder>(HtmlEncoder
+            .Create(allowedRanges: new[] {UnicodeRanges.BasicLatin, UnicodeRanges.Arabic}));
 
         // استفاده از Configuration برای خواندن ConnectionString
         services.AddDbContext<EShop.Data.Context.ApplicationDbContext>(options =>
@@ -42,7 +46,7 @@ public class Startup
 
         if (!keyPath.Exists)
             keyPath.Create();
-            keyPath.Create();ّ
+            keyPath.Create();
 
         services.AddDataProtection()
             .PersistKeysToFileSystem(keyPath)

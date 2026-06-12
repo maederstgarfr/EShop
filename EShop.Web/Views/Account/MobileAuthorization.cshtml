@@ -22,7 +22,7 @@
             <h2>ورود به حساب کاربری</h2>
             <form id="login-form">
                 <input type="hidden" asp-for="Token" id="captchaInput" />
-                <input asp-for="mobile" value="@Mobile" />
+                <input asp-for="mobile" type="hidden" value="@Mobile" />
                 <div class="form-group">
                     <label for="login-phone">شماره تلفن</label>
                     <input type="tel" id="login-phone" name="phone" placeholder="شماره تلفن خود را وارد کنید" required>

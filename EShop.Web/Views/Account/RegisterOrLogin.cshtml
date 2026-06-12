@@ -46,12 +46,21 @@
 
     <script>
 
-        document.querySelector('.btn-send-code').addEventListener('click', function() {
+        document.querySelector('.btn-send-code').addEventListener('click', function () {
             alert('کد تأیید به شماره شما ارسال شد!');
 
         });
     </script>
-@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+
+    @*otp sms
+    <script src="/Site/plugin/otp-sms/otp-input.js"></script>
+    <script src="/Site/plugin/otp-sms/otp-leader.js"></script>*@
+    
+
+
+
+    @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
     <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["googleReCaptcha:SiteKey"]"></script>
     <script>
         grecaptcha.ready(function () {
