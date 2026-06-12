@@ -1,7 +1,7 @@
 ﻿
 @{     
     ViewData["Title"] = "Shop";
-    Layout = "~/Views/Shared/_Layout.cshtml"; 
+    Layout = null; 
 }
 
 <html lang="en">
@@ -42,7 +42,7 @@
     @Component.InvokeAsync("HomeCartSection")
     <partial name="_SiteMobileMenu" />
     <partial name="_SiteFooterRef" />
-    @Component.InvokeAsync("HomeFooterSection", false)
+  
 
 </body>
 </html>

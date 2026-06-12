@@ -42,6 +42,7 @@ public class Startup
 
         if (!keyPath.Exists)
             keyPath.Create();
+            keyPath.Create();ّ
 
         services.AddDataProtection()
             .PersistKeysToFileSystem(keyPath)

@@ -36,6 +36,11 @@ namespace EShop.Web.Controllers
         [HttpPost("register"), ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterOrLogin(RegisterUserDTO dto)
         {
+            if (!await _captchaValidator.IsCaptchaPassedAsync(dto.Token))
+            {
+                TempData[ErrorMessage] = "اعتبار سنجی کپتچا با موفقیت انجام نشد، لطفا vpn را خاموش کنید";
+                return View(dto);
+            }
             await _userService.RegisterOrLoginUser(dto);
             return RedirectToAction("MobileAuthorization",new { returnUrl = dto.ReturnUrl , mobile= dto.MobileNumber });
         }

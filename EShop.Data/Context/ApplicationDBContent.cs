@@ -11,7 +11,7 @@ namespace EShop.Data.Context
 
         }
         #region Account
-       // public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
         #endregion
@@ -30,10 +30,10 @@ namespace EShop.Data.Context
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
 
             //داده هایی و حذف کن که حذف نشده باشند
-            //modelBuilder.Entity<User>()
-            //    .HasQueryFilter(u => !u.IsDeleted);
-            
-                
+            modelBuilder.Entity<User>()
+                .HasQueryFilter(u => !u.IsDeleted);
+
+
         }
 
         #endregion
