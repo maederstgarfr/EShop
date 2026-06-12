@@ -13,7 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EShop.Web", "EShop.Web\ESho
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EShop.Application", "EShop.Application", "{B32A36B3-E72F-475C-8A70-0DED53978160}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EShop.Application", "EShop.Application\EShop.Application.csproj", "{8C4A7DBD-C79B-4C0D-BBD4-9DE0F90FF897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EShop.Application", "EShop.Application\EShop.Application.csproj", "{8C4A7DBD-C79B-4C0D-BBD4-9DE0F90FF897}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3845F20C-2A4F-43AE-AA6D-37E3122FE99A}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

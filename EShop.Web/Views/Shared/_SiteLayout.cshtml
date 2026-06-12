@@ -36,10 +36,10 @@
     <div class="overlay" id="overlay"></div>
        
 
-    @Component.InvokeAsync("SiteHeader")
+    @await Component.InvokeAsync("SiteHeader")
     @RenderBody()
-    @Component.InvokeAsync("SiteFooter")
-    @Component.InvokeAsync("HomeCartSection")
+    @await Component.InvokeAsync("SiteFooter")
+    @await Component.InvokeAsync("HomeCartSection")
     <partial name="_SiteMobileMenu" />
     <partial name="_SiteFooterRef" />
   

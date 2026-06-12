@@ -61,6 +61,9 @@
         </div>
     </div>
 
+    @*opt sms*@
+    <script src="/Site/plugin/otp-sms/otp-leader.js"></script>
+
     @inject Microsoft.Extensions.Configuration.IConfiguration Configuration
     <script src="https://www.google.com/recaptcha/api.js?render=@Configuration["googleReCaptcha:SiteKey"]"></script>
     <script>

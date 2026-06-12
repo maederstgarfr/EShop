@@ -22,6 +22,24 @@
                 <span class="cart-count">0</span>
             </div>
         </div>
+        <div class="auth-Link">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-area="" asp-controller="" asp-action="" class="auth-btn">
+                    <i class="bi bi-person"></i>
+                    <span class="font-weight-bold d-sm-inline-block" d-none>حساب کاربری</span>
+                </a>
+            }
+            else
+            {
+                <a asp-area="" asp-controller="Account" asp-action="RegisterOrLogin" class="auth-btn">
+                    <i class="bi bi-person"></i>
+                    <span class="font-weight-bold d-sm-inline-block" d-none>عضویت / ورود</span>
+                </a>
+
+            }
+
+        </div>
 
         <div class="hamburger" id="hamburger">
             <i class="fas fa-bars"></i>

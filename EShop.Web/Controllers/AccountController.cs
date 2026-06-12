@@ -106,8 +106,11 @@ namespace EShop.Web.Controllers
                 TempData[SuccessMessage] = "خوش آمدید!";
 
                 if (!string.IsNullOrEmpty(dto.ReturnURL) && Url.IsLocalUrl(dto.ReturnURL))
+                {
+                    TempData[SuccessMessage] = "خوش آمدید!";
                     return Redirect(dto.ReturnURL);
-
+                }                   
+                TempData[SuccessMessage] = "خوش آمدید!";
                 return RedirectToAction("Index", "Home");
             }
 

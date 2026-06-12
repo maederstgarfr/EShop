@@ -1,116 +1,130 @@
-﻿<partial name="_SiteHeaderRef" />
-<!-- PRODUCTS (کدهای قبلی شما) -->
-<div class="products">
-    <h2>محصولات</h2>
+﻿
 
-    @{
-        var products = new[]
-        {
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>@ViewData["Title"]</title>
+    <partial name="_SiteMetaTags" />
+    <partial name="_SiteHeaderRef" />
+    <!-- PRODUCTS (کدهای قبلی شما) -->
+</head>
+<body>
+    <div class="products">
+        @*<h2>محصولات</h2>*@
+
+        @*@{
+            var products = new[]
+            {
                 new { Name="iPhone", Price="50,000,000" },
                 new { Name="Samsung", Price="30,000,000" },
                 new { Name="Xiaomi", Price="15,000,000" }
             };
-    }
+        }*@
 
-    <div class="grid">
-        @foreach (var p in products)
-        {
-            <div class="card">
-                <img src="https://via.placeholder.com/150">
-                <h3>@p.Name</h3>
-                <p>@p.Price</p>
+        @*<div class="grid">
+            @foreach (var p in products)
+            {
+                <div class="card">
+                    <img src="https://placehold.co/150">
+                    <h3>@p.Name</h3>
+                    <p>@p.Price</p>
+                </div>
+            }
+        </div>*@
+    </div>
+
+
+
+
+    <!--hero-section-->
+
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-right"></div>
+            <div class="hero-content">
+                <h3>بیش از ده هزار کتاب صوتی و متنی</h3>
+                <p>کتاب های رایگان و پولی</p>
+                <button href="registerOrlogin.html">ثبت نام</button>
             </div>
-        }
-    </div>
-</div>
-
-
-
-
-<!--hero-section-->
-
-<section class="hero">
-    <div class="hero-container">
-        <div class="hero-right"></div>
-        <div class="hero-content">
-            <h3>بیش از ده هزار کتاب صوتی و متنی</h3>
-            <p>کتاب های رایگان و پولی</p>
-            <button href="registerOrlogin.html">ثبت نام</button>
         </div>
-    </div>
 
-</section>
+    </section>
 
-<!--categories-section-->
+    <!--categories-section-->
 
-<section class="categories">
-    <h2 class="title-section">دسته‌بندی</h2>
-    <div class="category-boxes">
+    <section class="categories">
+        <h2 class="title-section">دسته‌بندی</h2>
+        <div class="category-boxes">
 
-        <a href="category.html?category=رمان" class="category-card">
-            <div class="icon"><i class="fas fa-book"></i></div>
-            <h3>رمان</h3>
-            <p>۱۲۰۰ کتاب</p>
-        </a>
+            <a href="category.html?category=رمان" class="category-card">
+                <div class="icon"><i class="fas fa-book"></i></div>
+                <h3>رمان</h3>
+                <p>۱۲۰۰ کتاب</p>
+            </a>
 
-        <a href="category.html?category=کسب و کار"
-           class="category-card">
-            <div class="icon"><i class="fas fa-briefcase"></i></div>
-            <h3>کسب و کار</h3>
-            <p>۸۰۰ کتاب</p>
-        </a>
+            <a href="category.html?category=کسب و کار"
+               class="category-card">
+                <div class="icon"><i class="fas fa-briefcase"></i></div>
+                <h3>کسب و کار</h3>
+                <p>۸۰۰ کتاب</p>
+            </a>
 
-        <a href="category.html?category=روانشناسی"
-           class="category-card">
-            <div class="icon"><i class="fas fa-brain"></i></div>
-            <h3>روانشناسی</h3>
-            <p>۹۵۰ کتاب</p>
-        </a>
+            <a href="category.html?category=روانشناسی"
+               class="category-card">
+                <div class="icon"><i class="fas fa-brain"></i></div>
+                <h3>روانشناسی</h3>
+                <p>۹۵۰ کتاب</p>
+            </a>
 
-        <a href="category.html?category=آموزشی" class="category-card">
-            <div class="icon">
-                <i class="fas fa-graduation-cap"></i>
+            <a href="category.html?category=آموزشی" class="category-card">
+                <div class="icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3>آموزشی</h3>
+                <p>۶۵۰ کتاب</p>
+            </a>
+
+            <a href="category.html?category=جنایی" class="category-card">
+                <div class="icon"><i class="fas fa-user-secret"></i></div>
+                <h3>جنایی</h3>
+                <p>۵۰۰ کتاب</p>
+            </a>
+        </div>
+    </section>
+
+    <!--children books section-->
+    <section class="children">
+        <h2 class="title-section">کتاب های مخصوص کودکان و نوجوانان</h2>
+        <div class="slider-wrapper">
+            <button class="btn btn-prev" id="prevBtn" disabled>‹</button>
+            <div class="slider-container" id="slider">
+                <!-- کارت‌ها با JS ساخته می‌شوند -->
             </div>
-            <h3>آموزشی</h3>
-            <p>۶۵۰ کتاب</p>
-        </a>
-
-        <a href="category.html?category=جنایی" class="category-card">
-            <div class="icon"><i class="fas fa-user-secret"></i></div>
-            <h3>جنایی</h3>
-            <p>۵۰۰ کتاب</p>
-        </a>
-    </div>
-</section>
-
-<!--children books section-->
-<section class="children">
-    <h2 class="title-section">کتاب های مخصوص کودکان و نوجوانان</h2>
-    <div class="slider-wrapper">
-        <button class="btn btn-prev" id="prevBtn" disabled>‹</button>
-        <div class="slider-container" id="slider">
-            <!-- کارت‌ها با JS ساخته می‌شوند -->
+            <button class="btn btn-next" id="nextBtn">›</button>
         </div>
-        <button class="btn btn-next" id="nextBtn">›</button>
-    </div>
-</section>
+    </section>
 
-<!--auido books section-->
-<section class="hot-books-section">
-    <h2 class="title-section">داغ‌ترین کتاب‌های صوتی</h2>
-    <div class="books-grid" id="hotBooksGrid">
-        <!-- کتاب‌ها اینجا رندر می‌شوند -->
-    </div>
-</section>
-
-<!-- banner section-->
-<div class="banner">
-    <div class="banner-container">
-        <div class="banner-img">
-            <img src="../assets/images/banner-1.jpg" />
+    <!--auido books section-->
+    <section class="hot-books-section">
+        <h2 class="title-section">داغ‌ترین کتاب‌های صوتی</h2>
+        <div class="books-grid" id="hotBooksGrid">
+            <!-- کتاب‌ها اینجا رندر می‌شوند -->
         </div>
-        <div class="banner-img">
-            <img src="../assets/images/banner-2.jpeg" />
+    </section>
+
+    <!-- banner section-->
+    <div class="banner">
+        <div class="banner-container">
+            <div class="banner-img">
+                <img src="../assets/images/banner-1.jpg" />
+            </div>
+            <div class="banner-img">
+                <img src="../assets/images/banner-2.jpeg" />
+            </div>
         </div>
     </div>
-</div>
+    @await Component.InvokeAsync("SiteHeader")
+    @await Component.InvokeAsync("SiteFooter")
+    @await Component.InvokeAsync("HomeCartSection")
+</body>
+</html>
