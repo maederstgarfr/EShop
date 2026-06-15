@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace EShop.Data.DTOs.ProductDTO
 {
-    public class ProductFeatuteDto
+    public class CreateGalleryDto
     {
-        public string Title { get; set; } = string.Empty;
-        public string Value { get; set; } = string.Empty;
+        public long ProductId { get; set; }
+        public IFormFile ImageName { get; set; }
         public int Order { get; set; }
-
     }
 }

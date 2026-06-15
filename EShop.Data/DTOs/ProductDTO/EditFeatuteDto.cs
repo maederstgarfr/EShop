@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace EShop.Data.DTOs.ProductDTO
 {
-    public class ProductFeatuteDto
+    public class EditFeatuteDto
     {
-        public string Title { get; set; } = string.Empty;
-        public string Value { get; set; } = string.Empty;
+        public long FeatuerId { get; set; }
+        public string Title { get; set; }
+        public string Value { get; set; }
         public int Order { get; set; }
-
     }
 }

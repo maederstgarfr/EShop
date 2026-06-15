@@ -18,6 +18,7 @@ namespace EShop.Application.Services.Interfaces
         Task EditProduct(EditProductDto dto);
         Task<bool> DeleteProduct(long ProductId);
         #endregion
+
         #region Categories
         Task AddProductSelectedCategories(List<long> SelectedCategories, long productId);
         Task RemoveProductSelectedCategories(long productId);
@@ -28,5 +29,32 @@ namespace EShop.Application.Services.Interfaces
         Task<bool> DeleteCategory(long categoryId);
         #endregion
 
+        #region Color
+        Task<FilterColorDto> FilterColor(FilterColorDto filter);
+        Task CreateColor(CreateColorDto dto);
+        Task<EditColorDto> GetEditColor(long ColorId);
+        Task EditColor(EditColorDto dto);
+        Task<bool> DeleteColor(long colorId);
+        #endregion
+
+        #region ProductVariant
+        Task CreateProductVariant(CreateProductVariantDto dto);
+        Task<EditColorDto> GetEditProductVarian(long variantId);
+        Task EditProductVarian(EditColorDto dto);
+        Task<bool> DeleteProductVarian(long variantId);
+        #endregion
+
+        #region Feature
+        Task<bool> DeleteFeature(long featuerId);
+
+        #endregion
+
+        #region Gallery
+        Task CreateGallery(CreateCategoryDto dto);
+        Task<EditGalleryDto> GetEditGallery(long galleryId);
+        Task EditGallery(EditGalleryDto dto);
+        Task<bool> DeleteGallery(long galleryId);
+
+        #endregion
     }
 }
