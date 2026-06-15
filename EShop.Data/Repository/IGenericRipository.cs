@@ -7,7 +7,7 @@ using EShop.Data.Entities.Common;
 
 namespace EShop.Data.Repository
 {
-    public interface IGenericRipository<TEntity> : IAsyncDisposable where TEntity : BaseEntitiy
+    public interface IGenerecRepository<TEntity> : IAsyncDisposable where TEntity : BaseEntitiy
     {
         //خوندن اطلاعات از دیتابیس
         IQueryable<TEntity> GetQuery();

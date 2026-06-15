@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Data.Repository
 {
-    public class GenericRipository<TEntitiy> : IGenericRipository<TEntitiy> where TEntitiy : BaseEntitiy
+    public class GenericRepository<TEntitiy> : IGenerecRepository<TEntitiy> where TEntitiy : BaseEntitiy
     {
         private readonly ApplicationDbContext _dbcontext;
         private readonly DbSet<TEntitiy> _dbSet;
 
-        public GenericRipository(ApplicationDbContext dbContext)
+        public GenericRepository(ApplicationDbContext dbContext)
         {
             _dbcontext = dbContext;
             this._dbSet = _dbcontext.Set<TEntitiy>();
