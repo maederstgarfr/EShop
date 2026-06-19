@@ -28,7 +28,7 @@ public class Startup
     // این متد برای تزریق سرویس‌هاست
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddScoped(typeof(IGenericRipository<>), typeof(GenericRipository<>));
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ISmsService, SmsService>();
         services.AddHttpClient<ICaptchaValidator,GoogleReCaptchaValidator>();

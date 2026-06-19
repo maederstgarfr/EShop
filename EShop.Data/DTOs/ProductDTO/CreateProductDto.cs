@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using EShop.Data.Entities.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace EShop.Data.DTOs.ProductDTO
 {
@@ -20,7 +21,7 @@ namespace EShop.Data.DTOs.ProductDTO
     {
         Success,
         Error,
-        fileNotImage,
+        SavingmainImageFaild,
         BrandNotFound,
         CategoryNotFound
     }

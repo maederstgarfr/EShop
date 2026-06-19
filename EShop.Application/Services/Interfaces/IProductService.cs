@@ -13,9 +13,9 @@ namespace EShop.Application.Services.Interfaces
         #region Product
         Task<FilterProductDto> FilterProduct(FilterProductDto dto);
         Task<ProductDetailDto> ProductDetail(long productId);
-        Task CreateProduct(CreateProductDto dto);
+        Task<CreateProductResult> CreateProduct(CreateProductDto dto);
         Task<EditProductDto> EditProduct(long productId);
-        Task EditProduct(EditProductDto dto);
+        Task<EditProductResult> EditProduct(EditProductDto dto);
         Task<bool> DeleteProduct(long ProductId);
         #endregion
 
@@ -39,9 +39,9 @@ namespace EShop.Application.Services.Interfaces
 
         #region ProductVariant
         Task CreateProductVariant(CreateProductVariantDto dto);
-        Task<EditColorDto> GetEditProductVarian(long variantId);
-        Task EditProductVarian(EditColorDto dto);
-        Task<bool> DeleteProductVarian(long variantId);
+        Task<EditColorDto> GetEditProductVariant(long variantId);
+        Task EditProductVariant(EditColorDto dto);
+        Task<bool> DeleteProductVariant(long variantId);
         #endregion
 
         #region Feature

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1wW8GzEBQq4fVcqbYYXOvbdQhT5mZ0XUUjJwzIwseY5I2Rfjzu0IjKBhLsqmqJXC0FbdWYlhPBWbEfZ8jmOvlA==",
+  "dgSpecHash": "bnZbO8o3hvddAb05n8/a25U6Ops1BQprRxyPalVNMUodxCkFjUTceEomdZCNvb04h7eK9dcVdkyfexKzI0rmUg==",
   "success": true,
   "projectFilePath": "E:\\EShop source\\EShop\\EShop.Data\\EShop.Data.csproj",
   "expectedPackageFiles": [
@@ -37,6 +37,7 @@
     "C:\\Users\\M\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\M\\.nuget\\packages\\newtonsoft.json\\10.0.1\\newtonsoft.json.10.0.1.nupkg.sha512",
     "C:\\Users\\M\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
+    "C:\\Users\\M\\.nuget\\packages\\sixlabors.imagesharp\\4.0.0\\sixlabors.imagesharp.4.0.0.nupkg.sha512",
     "C:\\Users\\M\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\M\\.nuget\\packages\\system.collections.concurrent\\4.3.0\\system.collections.concurrent.4.3.0.nupkg.sha512",
     "C:\\Users\\M\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",

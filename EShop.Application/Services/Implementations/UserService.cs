@@ -11,10 +11,10 @@ namespace EShop.Application.Services.Implementations
     public class UserService : IUserService
     {
         #region CTOR
-        private readonly IGenericRipository<User> _userRepository;
+        private readonly IGenericRepository<User> _userRepository;
         private readonly ISmsService _SmsService;
 
-        public UserService(IGenericRipository<User> userRepository, ISmsService SmsService)
+        public UserService(IGenericRepository<User> userRepository, ISmsService SmsService)
         {
             _userRepository = userRepository;
             _SmsService = SmsService;

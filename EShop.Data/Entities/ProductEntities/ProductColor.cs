@@ -1,4 +1,6 @@
-﻿using EShop.Data.Entities.Common;
+﻿using System.Collections.Generic;
+using EShop.Data.Entities.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace EShop.Data.Entities.ProductEntities
 {
