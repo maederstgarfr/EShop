@@ -64,10 +64,6 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[5.0.17, )"
-            },
-            "SixLabors.ImageSharp": {
-              "target": "Package",
-              "version": "[4.0.0, )"
             }
           },
           "imports": [

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EShop.Application.extentions;
 using EShop.Application.Services.Interfaces;
 using EShop.Application.Utils;
 using EShop.Data.DTOs.ProductCategoryDto;
@@ -78,9 +79,8 @@ namespace EShop.Application.Services.Implementations
                 Description=dto.Description,
                 ShortDescription=dto.ShortDescription,
                 IsAvailable=dto.IsAvailabe,
-
-
             };
+            
             #region Main Image
             var mainImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.MainImage.FileName);
             var res = dto.MainImage.AddImageToServer(mainImageName, PathExtention.ProductImageServer, 150,150,PathExtention.ProductImageThumbServer);
@@ -93,9 +93,92 @@ namespace EShop.Application.Services.Implementations
             {
                 return CreateProductResult.SavingmainImageFaild;
             }
+
             #endregion
+
             await _productRepository.AddEntity(product);
             await _productRepository.SaveAsync();
+
+            #region Category
+            foreach (var category in dto.Categories)
+            {
+                var selectedCategory = await _categoryRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == category);
+                if (selectedCategory == null) return CreateProductResult.CategoryNotFound;
+
+                var selected = new ProductSelectedCategory
+                {
+                    Product = product,
+                    Category = selectedCategory,
+                    ProductId = product.Id,
+                    CategoryId = category
+                };
+                await _selectedCategoryRepository.AddEntity(selected);
+            }
+            await _selectedCategoryRepository.SaveAsync();
+            #endregion
+
+            #region Brand
+            var brand = await _brandRepository.GetQuery().FirstOrDefaultAsync(d=>d.Id == dto.BrandId);
+            if (brand == null) return CreateProductResult.BrandNotFound;
+            var selectedBrand = new ProductSelectedBrand
+            {
+                Product=product,
+                Brand=brand,
+                BrandId= brand.Id,
+                ProductId=product.Id
+            };
+            await _selectedBrandRepository.AddEntity(selectedBrand);
+            await _selectedBrandRepository.SaveAsync();
+            #endregion
+
+            #region Features
+            if(dto.ProductFeatutes != null && dto.ProductFeatutes.Any())
+            {   
+                var featureOrder = 1;
+                foreach(var item in dto.ProductFeatutes)
+                {             
+                    var feature = new ProductFeature
+                    {
+                        Product=product,
+                        ProductId=product.Id,
+                        Title=item.Title,
+                        Value=item.Value,
+                        Order= featureOrder
+                    };
+                    await _featureRepository.AddEntity(feature);
+                    featureOrder++;
+                }
+                await _featureRepository.SaveAsync();
+
+            }
+            #endregion
+
+            #region Galleries
+            if (dto.ProductGalleries != null && dto.ProductGalleries.Any())
+            {
+                var galleryOrder = 2;
+                foreach (var gallery in dto.ProductGalleries)
+                {
+                    var galleryItem = new ProductGallery
+                    {
+                        ProductId=product.Id,
+                        Order=galleryOrder
+                    };
+                   //image
+                    var galleyImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.MainImage.FileName);
+                    dto.MainImage.AddImageToServer(mainImageName, PathExtention.ProductGalleryServer, 150, 150, PathExtention.ProductGalleryThumbServer);
+                    galleryItem.ImageName = galleyImageName;
+
+                    await _galleryRepository.AddEntity(galleryItem);
+                    await _galleryRepository.SaveAsync();
+                    galleryOrder++;
+                }
+                
+            }
+
+           
+            
+            #endregion
             return CreateProductResult.Success;
         }
 
