@@ -198,9 +198,26 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<EditProductDto> EditProduct(long productId)
+        public async Task<EditProductDto> EditProduct(long productId)
         {
-            throw new NotImplementedException();
+            var brand = await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(d=> d.ProductId == productId);
+            var data = await _productRepository.GetEntityById(productId);
+
+            var model = new EditProductDto
+            {
+                ProductId = productId,
+                Description = data.Description,
+                IsAvailabe = data.IsAvailable,
+                Title = data.Title,
+                ShortDescription = data.ShortDescription,
+                Categories = await _selectedCategoryRepository.GetQuery().Where(d => d.ProductId == productId).Select(d=>d.CategoryId).ToListAsync()
+                    
+            };
+            if(brand!= null)
+            {
+                model.BrandId = brand.Id;
+            }
+            return model;
         }
 
         public Task<EditProductResult> EditProduct(EditProductDto dto)
@@ -240,8 +257,8 @@ namespace EShop.Application.Services.Implementations
                 ShortDescription=data.ShortDescription,
                 ProductComments = await _commentRepository.GetQuery().Where(d => d.ProductId == productId).ToListAsync(),
                 ProductVariants=await _variantRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
-                ProductSelectedBrand=await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(d=> d.ProductId==productId).ToListAsync(),
-                SelectedCategories=await _selectedCategoryRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
+                ProductSelectedBrand = await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(d => d.ProductId == productId),        
+                SelectedCategories =await _selectedCategoryRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
                 ProductGalleries=await _galleryRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
                 ProductFeatures = await _featureRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
                 
@@ -251,11 +268,9 @@ namespace EShop.Application.Services.Implementations
         public Task RemoveProductSelectedCategories(long productId)
         {
             throw new NotImplementedException();
-        }      
-
-        
-
+        }
         #endregion
+
         #region Color
         public Task<FilterColorDto> FilterColor(FilterColorDto filter)
         {
