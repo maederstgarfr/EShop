@@ -24,8 +24,7 @@ namespace EShop.Data.DTOs.ProductDTO
     {
         Success,
         Error,
-        fileNotImage,
-        BrandNotFound,
-        CategoryNotFound
+        ImageNotSaved,
+        BrandNotFound
     }
 }

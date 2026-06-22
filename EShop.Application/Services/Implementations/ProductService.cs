@@ -220,9 +220,59 @@ namespace EShop.Application.Services.Implementations
             return model;
         }
 
-        public Task<EditProductResult> EditProduct(EditProductDto dto)
+        public async Task<EditProductResult> EditProduct(EditProductDto dto)
         {
-            throw new NotImplementedException();
+            var product = await _productRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == dto.ProductId);
+            if (product = null) return EditProductResult.Error;
+
+            product.Title = dto.Title;
+            product.Description = dto.Description;
+            product.ShortDescription = dto.ShortDescription;
+            product.IsAvailable = dto.IsAvailabe;
+
+            #region Brand
+            if (dto.BrandId != null)
+            {
+                var brand = await _brandRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == dto.BrandId);
+                if (brand == null) return EditProductResult.BrandNotFound;
+
+                var oldBrand = await _selectedBrandRepository.GetEntityById((long) dto.BrandId);
+                await _selectedBrandRepository.DeletePermanent(oldBrand);
+
+                var newBrand = new ProductSelectedBrand
+                {
+                    Product = product,
+                    Brand = brand,
+                    BrandId=brand.Id,
+                    ProductId=dto.ProductId
+                };
+                await _selectedBrandRepository.AddEntity(newBrand);
+                await _selectedBrandRepository.SaveAsync();
+            }
+            #endregion
+            await RemoveProductSelectedCategories(dto.ProductId);
+            await AddProductSelectedCategories(dto.Categories, dto.ProductId);
+            if(dto.MainImage != null)
+            {
+                #region Main Image
+                var mainImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.MainImage.FileName);
+                var res = dto.MainImage.AddImageToServer(mainImageName, PathExtention.ProductImageServer, 150, 150, PathExtention.ProductImageThumbServer,product.MainImageName);
+                if (res)
+                {
+                    product.MainImageName = mainImageName;
+
+                }
+                else
+                {
+                    return EditProductResult.ImageNotSaved;
+                }
+
+                #endregion
+            }
+            _productRepository.EditEntity(product);
+            await _productRepository.SaveAsync();
+            return EditProductResult.Success;
+
         }
 
         public Task<FilterCategoryDto> FilterCategory(FilterCategoryDto dto)
