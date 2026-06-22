@@ -9,6 +9,7 @@ using EShop.Application.Services.Interfaces;
 using EShop.Application.Utils;
 using EShop.Data.DTOs.ProductCategoryDto;
 using EShop.Data.DTOs.ProductDTO;
+using EShop.Data.Entities.OrderEntities;
 using EShop.Data.Entities.ProductEntities;
 using EShop.Data.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace EShop.Application.Services.Implementations
         private readonly IGenericRepository<ProductSelectedCategory> _selectedCategoryRepository;
         private readonly IGenericRepository<ProductFeature> _featureRepository;
         private readonly IGenericRepository<ProductGallery> _galleryRepository;
+        private readonly IGenericRepository<OrderDetail> _orderDetail;
 
         #endregion
         #region Product
@@ -43,6 +45,7 @@ namespace EShop.Application.Services.Implementations
             _selectedCategoryRepository = selectedCategoryRepository;
             _featureRepository = featureRepository;
             _galleryRepository = galleryRepository;
+            _orderDetail = _orderDetail;
         }
 
         public async ValueTask DisposeAsync()
@@ -57,6 +60,7 @@ namespace EShop.Application.Services.Implementations
             await _galleryRepository.DisposeAsync();
             await _brandRepository.DisposeAsync();
             await _selectedBrandRepository.DisposeAsync();
+            await _orderDetail.DisposeAsync();
         }
         #endregion
 
@@ -187,9 +191,49 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<bool> DeleteProduct(long ProductId)
+        public async Task<bool> DeleteProduct(long ProductId)
         {
-            throw new NotImplementedException();
+            #region order
+            var productOrdered = await _orderDetail.GetQuery().AllAsync(d => d.Id == ProductId);
+            if (productOrdered) return false;
+            #endregion
+
+            #region features
+            var features = await _featureRepository.GetQuery().Where(d => d.ProductId == ProductId).ToListAsync();
+            _featureRepository.DeletePermanentEntities(features);
+            await _featureRepository.SaveAsync();
+            #endregion
+            
+            #region caetgories
+            var caetgories = await _selectedCategoryRepository.GetQuery().Where(d => d.ProductId == ProductId).ToListAsync();
+            _selectedCategoryRepository.DeletePermanentEntities(caetgories);
+            await _selectedCategoryRepository.SaveAsync();
+            #endregion
+
+            #region galleries
+            var galleries = await _galleryRepository.GetQuery().Where(d => d.Id == ProductId).ToListAsync();
+            if (galleries.Any())
+            {
+                foreach(var item in galleries)
+                {
+                    item.ImageName.DeleteImage(PathExtention.ProductGalleryServer, PathExtention.ProductGalleryThumb);
+                }
+                _galleryRepository.DeletePermanentEntities(galleries);
+                _galleryRepository.SaveAsync();
+            }
+
+            #endregion
+
+            #region Comments
+            var comments = await _commentRepository.GetQuery().Where(d => d.ProductId == ProductId).ToListAsync();
+            _commentRepository.DeletePermanentEntities(comments);
+            _commentRepository.SaveAsync();
+            #endregion
+            var product = await _productRepository.GetEntityById(ProductId);
+            _productRepository.DeleteEntity(product);
+            await _productRepository.SaveAsync();
+            return true;
+            
         }
 
 
@@ -223,7 +267,7 @@ namespace EShop.Application.Services.Implementations
         public async Task<EditProductResult> EditProduct(EditProductDto dto)
         {
             var product = await _productRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == dto.ProductId);
-            if (product = null) return EditProductResult.Error;
+            if (product == null) return EditProductResult.Error;
 
             product.Title = dto.Title;
             product.Description = dto.Description;
