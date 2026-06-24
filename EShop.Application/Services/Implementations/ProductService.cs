@@ -367,9 +367,10 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<FilterProductDto> FilterProduct(FilterProductDto dto)
+        public async Task<FilterProductDto> FilterProduct(FilterProductDto filter)
         {
-            throw new NotImplementedException();
+            var query = _productRepository.GetQuery().Include(d => d.SelectedCategories).ThenInclude(d => d.Category).OrderByDescending(d => d.CreateDate);
+            
         }
 
         public async Task<EditCategoryDto> GetEditCategory(long categoryId)
