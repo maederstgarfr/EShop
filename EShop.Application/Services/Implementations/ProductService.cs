@@ -369,8 +369,70 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<FilterProductDto> FilterProduct(FilterProductDto filter)
         {
-            var query = _productRepository.GetQuery().Include(d => d.SelectedCategories).ThenInclude(d => d.Category).OrderByDescending(d => d.CreateDate);
-            
+            var query = _productRepository.GetQuery().Include(d => d.ProductVariants)
+                .Include(d => d.SelectedCategories)
+                .ThenInclude(d => d.Category)
+                .OrderByDescending(d => d.CreateDate).AsQueryable();
+
+            #region Switch
+            switch (filter.ProductOrder)
+            {
+                case FilterProductOrder.Newest:
+                    query = query.OrderByDescending(d => d.CreateDate);
+                    break;
+                case FilterProductOrder.Oldest:
+                    query = query.OrderBy(d => d.CreateDate);
+                    break;
+                case FilterProductOrder.MostExpensive:
+                    query = query.OrderByDescending(d => d.ProductVariants.OrderByDescending(v => v.Price));
+                    break;
+                case FilterProductOrder.Cheapest:
+                    query = query.OrderBy(d => d.ProductVariants.OrderBy(v => v.Price));
+                    break;
+            }
+            switch (filter.ProductStatus)
+            {
+                case FilterProductStatus.All:
+                    break;
+                case FilterProductStatus.Available:
+                    query = query.Where(d => d.IsAvailable);
+                    break;
+                case FilterProductStatus.NotAvailable:
+                    query = query.Where(d => !d.IsAvailable);
+                    break;
+                case FilterProductStatus.HasStockCount:
+                    query = query.Where(d => d.ProductVariants.Any(v => v.StockCount > 0));
+                    break;
+                case FilterProductStatus.HasZeroStockCount:
+                    query = query.Where(d => d.ProductVariants.Any(v => v.StockCount == 0));
+                    break;
+            }
+            #endregion
+
+            #region Filters
+            if (!string.IsNullOrEmpty(filter.Title))
+            {
+                query = query.Where(p => EF.Functions.Like(p.Title, $"{filter.Title }"));
+            }
+            if(filter.StartPrice != null)
+            {
+                query = query.Where(d => d.Price > filter.StartPrice);
+            }
+            if (filter.EndtPrice != null)
+            {
+                query = query.Where(d => d.Price < filter.EndtPrice);
+            }
+            if (filter is { StartPrice:not null, EndtPrice:not null })
+            {
+                query = query.Where(d=>d.Price > filter.StartPrice && d.Price< filter.EndtPrice);
+            }
+            if (query.Any())
+            {
+                filter.MostPrice = query.OrderByDescending(d => d.Price).First().Price;
+                filter.LeastPrice = query.OrderBy(d => d.Price).First().Price;
+            }
+            #endregion
+
         }
 
         public async Task<EditCategoryDto> GetEditCategory(long categoryId)

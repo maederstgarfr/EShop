@@ -16,7 +16,7 @@ namespace EShop.Data.DTOs.ProductDTO
         public long? CategoryId { get; set; }
         public int? MostPrice { get; set; }
         public int? LeastPrice { get; set; }
-        public int? StarttPrice { get; set; }
+        public int? StartPrice { get; set; }
         public int? EndtPrice { get; set; }
         public FilterProductOrder ProductOrder { get; set; }
         public FilterProductStatus ProductStatus { get; set; }
