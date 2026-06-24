@@ -25,6 +25,7 @@ namespace EShop.Data.DTOs.ProductDTO
         Success,
         Error,
         ImageNotSaved,
-        BrandNotFound
+        BrandNotFound,
+        CategorynotFound
     }
 }

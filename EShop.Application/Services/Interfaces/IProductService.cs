@@ -20,11 +20,11 @@ namespace EShop.Application.Services.Interfaces
         #endregion
 
         #region Categories
-        Task AddProductSelectedCategories(List<long> SelectedCategories, long productId);
+        Task<bool> AddProductSelectedCategories(List<long> SelectedCategories, long productId);
         Task RemoveProductSelectedCategories(long productId);
         Task<FilterCategoryDto> FilterCategory(FilterCategoryDto dto);
-        Task CreateCategory(CreateCategoryDto dto);
-        Task EditCategory(EditCategoryDto dto);
+        Task<bool> CreateCategory(CreateCategoryDto dto);
+        Task<bool> EditCategory(EditCategoryDto dto);
         Task<EditCategoryDto> GetEditCategory(long categoryId);
         Task<bool> DeleteCategory(long categoryId);
         #endregion

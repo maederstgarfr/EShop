@@ -22,7 +22,7 @@ namespace EShop.Data.Repository
         //برای حذف یک مقدار
         void DeleteEntity(TEntity entity);
         //برای حذف کامل حتی از دیتابیس
-        void DeletePermanent(TEntity entity);
+        Task DeletePermanent(TEntity entity);
         // برای حذف چند مورد
         void DeleteEntites(List<TEntity> entities);
         void DeletePermanentEntities(List<TEntity> entities);

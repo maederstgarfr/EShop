@@ -65,14 +65,44 @@ namespace EShop.Application.Services.Implementations
         #endregion
 
         #region Category
-        public Task AddProductSelectedCategories(List<long> SelectedCategories, long productId)
+        public async Task<bool> AddProductSelectedCategories(List<long> SelectedCategories, long productId)
         {
-            throw new NotImplementedException();
+            foreach (var category in SelectedCategories)
+            {
+                var selectedCategory = await _categoryRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == category);
+                if (selectedCategory == null) return false;
+
+                var selected = new ProductSelectedCategory
+                {
+                    Product = await _productRepository.GetEntityById(productId),
+                    Category = selectedCategory,
+                    ProductId = productId,
+                    CategoryId = category
+                };
+                await _selectedCategoryRepository.AddEntity(selected);
+            }
+            await _selectedCategoryRepository.SaveAsync();
+            return true;
         }
 
-        public async Task CreateCategory(CreateCategoryDto dto)
+        public async Task<bool> CreateCategory(CreateCategoryDto dto)
         {
-           throw new NotImplementedException();
+            #region Check URl
+            var UrlInUse = await _categoryRepository.GetQuery().AnyAsync(c => c.Url == dto.Url);
+            if (UrlInUse) return false;
+            #endregion
+
+            var category = new ProductCategory
+            {
+                Title = dto.Title,
+                IsActive = false,
+                Order = dto.Order,
+                ParentId = dto.ParentId,
+                Url = dto.Url
+            };
+            await _categoryRepository.AddEntity(category);
+            await _categoryRepository.SaveAsync();
+            return true;
         }
 
         public async Task<CreateProductResult> CreateProduct(CreateProductDto dto)
@@ -104,21 +134,8 @@ namespace EShop.Application.Services.Implementations
             await _productRepository.SaveAsync();
 
             #region Category
-            foreach (var category in dto.Categories)
-            {
-                var selectedCategory = await _categoryRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == category);
-                if (selectedCategory == null) return CreateProductResult.CategoryNotFound;
-
-                var selected = new ProductSelectedCategory
-                {
-                    Product = product,
-                    Category = selectedCategory,
-                    ProductId = product.Id,
-                    CategoryId = category
-                };
-                await _selectedCategoryRepository.AddEntity(selected);
-            }
-            await _selectedCategoryRepository.SaveAsync();
+           var productCategoryResult= await AddProductSelectedCategories(dto.Categories, product.Id);
+            if (!productCategoryResult) return CreateProductResult.CategoryNotFound;
             #endregion
 
             #region Brand
@@ -186,9 +203,15 @@ namespace EShop.Application.Services.Implementations
             return CreateProductResult.Success;
         }
 
-        public Task<bool> DeleteCategory(long categoryId)
+        public async Task<bool> DeleteCategory(long categoryId)
         {
-            throw new NotImplementedException();
+            var categoryInUse = await _selectedCategoryRepository.GetQuery().AnyAsync(d => d.CategoryId == categoryId);
+            if (categoryInUse) return false;
+
+            var data = await _categoryRepository.GetEntityById(categoryId);
+            _categoryRepository.DeleteEntity(data);
+            await _categoryRepository.SaveAsync();
+            return true;
         }
 
         public async Task<bool> DeleteProduct(long ProductId)
@@ -237,9 +260,24 @@ namespace EShop.Application.Services.Implementations
         }
 
 
-        public Task EditCategory(EditCategoryDto dto)
+        public async Task<bool> EditCategory(EditCategoryDto dto)
         {
-            throw new NotImplementedException();
+            #region Check URl
+            var UrlInUse = await _categoryRepository.GetQuery().AnyAsync(c => c.Url == dto.Url);
+            if (UrlInUse) return false;
+            #endregion  
+
+            var data = await _categoryRepository.GetEntityById(dto.CategoryId);
+
+            data.Title = dto.Title;
+            data.Order = dto.Order;
+            data.Url = dto.Url;
+            data.IsActive = dto.IsActive;
+            data.ParentId = dto.ParentId;
+
+            _categoryRepository.EditEntity(data);
+            await _categoryRepository.SaveAsync();
+            return true;
         }
 
         public async Task<EditProductDto> EditProduct(long productId)
@@ -294,8 +332,13 @@ namespace EShop.Application.Services.Implementations
                 await _selectedBrandRepository.SaveAsync();
             }
             #endregion
+
+            #region Category
             await RemoveProductSelectedCategories(dto.ProductId);
-            await AddProductSelectedCategories(dto.Categories, dto.ProductId);
+            var productCategoryresult=  await AddProductSelectedCategories(dto.Categories, dto.ProductId);
+            if (!productCategoryresult) return EditProductResult.CategorynotFound;
+            #endregion
+            
             if(dto.MainImage != null)
             {
                 #region Main Image
@@ -329,9 +372,18 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<EditCategoryDto> GetEditCategory(long categoryId)
+        public async Task<EditCategoryDto> GetEditCategory(long categoryId)
         {
-            throw new NotImplementedException();
+            var data =await _categoryRepository.GetEntityById(categoryId);
+            return new EditCategoryDto
+            {
+                Title = data.Title,
+                Order = data.Order,
+                Url = data.Url,
+                ParentId = data.ParentId,
+                CategoryId=data.Id,
+                IsActive=data.IsActive
+            };
         }
 
         public async Task<ProductDetailDto> ProductDetail(long productId)
@@ -359,9 +411,11 @@ namespace EShop.Application.Services.Implementations
             };
         }
 
-        public Task RemoveProductSelectedCategories(long productId)
+        public async Task RemoveProductSelectedCategories(long productId)
         {
-            throw new NotImplementedException();
+            var selectedCategory = await _selectedCategoryRepository.GetQuery().Where(d => d.ProductId == productId).ToListAsync();
+            _selectedCategoryRepository.DeletePermanentEntities(selectedCategory);
+            await _selectedCategoryRepository.SaveAsync();
         }
         #endregion
 

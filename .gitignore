@@ -1,26 +1,53 @@
-# Build results
+﻿# Build results
 bin/
 obj/
+*.dll
+*.exe
+*.pdb
 
 # Visual Studio
 .vs/
 *.user
 *.suo
 *.userosscache
-*.sln.docview
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
 
 # NuGet
 *.nupkg
 packages/
-project.lock.json
-
-# Publish
-publish/
-**/publish/
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
 
 # Logs
 *.log
+logs/
 
-# OS
-.DS_Store
-Thumbs.db
+# appsettings حساس (مهم!)
+appsettings.Development.json
+appsettings.Production.json
+appsettings.*.local.json
+
+# فایل‌های آپلودی کاربر (عکس محصولات و...)
+wwwroot/UploadFiles/
+wwwroot/Images/Products/
+
+# Database
+*.mdf
+*.ldf
+*.db
+
+# Environment
+.env
+.env.local
+
+
+appsettings.Development.json
+appsettings.Production.json
+*.local.json

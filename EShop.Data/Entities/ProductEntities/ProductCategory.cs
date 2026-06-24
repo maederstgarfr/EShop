@@ -15,6 +15,7 @@ namespace EShop.Data.Entities.ProductEntities
         public bool IsActive { get; set; }
         public int Order { get; set; }
         public ProductCategory Parent { get; set; }
+        public ICollection<ProductCategory> subCategories { get; set; } = new List<ProductCategory>();
         public ICollection<ProductSelectedCategory> productSelectedCategories { get; set; }
 
     }
