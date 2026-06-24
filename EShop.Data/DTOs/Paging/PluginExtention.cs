@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EShop.Data.DTOs.Paging
+{
+    public static class PluginExtention
+    {
+        public static IQueryable<T> Paging<T>(this IQueryable<T> query, BasePaging paging)
+        {
+            return query.Skip(paging.SkipEntitiy).Take(paging.TakeEntitiy);
+        }
+    }
+}
