@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using EShop.Application.extentions;
 using EShop.Application.Services.Interfaces;
 using EShop.Application.Utils;
+using EShop.Data.DTOs.Paging;
 using EShop.Data.DTOs.ProductCategoryDto;
 using EShop.Data.DTOs.ProductDTO;
 using EShop.Data.Entities.OrderEntities;
@@ -362,17 +363,51 @@ namespace EShop.Application.Services.Implementations
 
         }
 
-        public Task<FilterCategoryDto> FilterCategory(FilterCategoryDto dto)
+        public async Task<FilterCategoryDto> FilterCategory(FilterCategoryDto filter)
         {
-            throw new NotImplementedException();
+            #region query
+            var query = _categoryRepository.GetQuery().OrderByDescending(d => d.CreateDate).AsQueryable();
+            #endregion
+
+            #region Switch
+            switch (filter.CategoryStatus)
+            {
+                case FilterCategoryDto.FilterCategoryStatus.All:
+                    break;
+                case FilterCategoryDto.FilterCategoryStatus.Active:
+                    query = query.Where(d => d.IsActive);
+                    break;
+                case FilterCategoryDto.FilterCategoryStatus.DeActive:
+                    query = query.Where(d => !d.IsActive);
+                    break;
+            }
+
+            #endregion
+
+            #region Filter
+            if (!string.IsNullOrEmpty(filter.Title))
+            {
+                query = query.Where(c => EF.Functions.Like(c.Title, $"{ filter.Title}"));
+
+            }
+            #endregion
+
+            #region Paging
+            var pager = Pager.Build(filter.PageId, await query.CountAsync(), filter.TakeEntitiy, filter.HowManyShowPageAfterAndBefore);
+            var allEntities = await query.Paging(pager).ToListAsync();
+            #endregion
+            return filter.SetData(allEntities).SetPaging(pager);
+
         }
 
         public async Task<FilterProductDto> FilterProduct(FilterProductDto filter)
         {
+            #region Query
             var query = _productRepository.GetQuery().Include(d => d.ProductVariants)
                 .Include(d => d.SelectedCategories)
                 .ThenInclude(d => d.Category)
                 .OrderByDescending(d => d.CreateDate).AsQueryable();
+            #endregion
 
             #region Switch
             switch (filter.ProductOrder)
@@ -404,17 +439,21 @@ namespace EShop.Application.Services.Implementations
                     query = query.Where(d => d.ProductVariants.Any(v => v.StockCount > 0));
                     break;
                 case FilterProductStatus.HasZeroStockCount:
-                    query = query.Where(d => d.ProductVariants.Any(v => v.StockCount == 0));
+                    query = query.Where(d => !d.ProductVariants.Any(v => v.StockCount > 0));
                     break;
             }
             #endregion
 
             #region Filters
+            #region Title
             if (!string.IsNullOrEmpty(filter.Title))
             {
                 query = query.Where(p => EF.Functions.Like(p.Title, $"{filter.Title }"));
             }
-            if(filter.StartPrice != null)
+            #endregion
+
+            #region price
+            if (filter.StartPrice != null)
             {
                 query = query.Where(d => d.Price > filter.StartPrice);
             }
@@ -422,9 +461,9 @@ namespace EShop.Application.Services.Implementations
             {
                 query = query.Where(d => d.Price < filter.EndtPrice);
             }
-            if (filter is { StartPrice:not null, EndtPrice:not null })
+            if (filter is { StartPrice: not null, EndtPrice: not null })
             {
-                query = query.Where(d=>d.Price > filter.StartPrice && d.Price< filter.EndtPrice);
+                query = query.Where(d => d.Price > filter.StartPrice && d.Price < filter.EndtPrice);
             }
             if (query.Any())
             {
@@ -432,6 +471,33 @@ namespace EShop.Application.Services.Implementations
                 filter.LeastPrice = query.OrderBy(d => d.Price).First().Price;
             }
             #endregion
+
+            #region Spesificatio Ids
+            if (filter.CategoryId is > 0)
+            {
+                query = query.Where(d => d.SelectedCategories.Any(s => s.CategoryId == filter.CategoryId));
+
+            }
+            if (filter.ColorId is > 0)
+            {
+                query = query.Where(d => d.ProductVariants.Any(v => v.ColorId == filter.ColorId));
+            }
+            if (filter.CategoryId is > 0)
+            {
+                query = query.Where(d => d.ProductSelectedBrand != null && d.ProductSelectedBrand.BrandId == filter.BrandId);
+            }
+            #endregion
+
+
+
+
+            #endregion
+
+            #region Paging
+            var pager = Pager.Build(filter.PageId, await query.CountAsync(), filter.TakeEntitiy, filter.HowManyShowPageAfterAndBefore);
+            var allEntities = await query.Paging(pager).ToListAsync();
+            #endregion
+            return filter.SetData(allEntities).SetPaging(pager);
 
         }
 

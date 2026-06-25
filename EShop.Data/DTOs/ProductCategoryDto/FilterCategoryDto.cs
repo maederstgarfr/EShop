@@ -14,6 +14,7 @@ namespace EShop.Data.DTOs.ProductCategoryDto
         public long? CategoryId { get; set; }
         public string Title { get; set; }
         public string Url { get; set; }
+        public FilterCategoryStatus CategoryStatus { get; set; }
         public List<ProductCategory> Data{ get; set; }
 
         #region Methods
@@ -36,5 +37,11 @@ namespace EShop.Data.DTOs.ProductCategoryDto
             return this;
         }
         #endregion
+        public enum FilterCategoryStatus
+        {
+            All,
+            Active,
+            DeActive
+        }
     }
 }
