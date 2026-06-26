@@ -9,7 +9,7 @@ namespace EShop.Data.DTOs.ProductDTO
     public class EditColorDto
     {
 
-        public string colorId { get; set; }
+        public long ColorId { get; set; }
         public string Title { get; set; }
         public string ColorCode { get; set; }
     }

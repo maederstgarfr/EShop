@@ -9,6 +9,6 @@ namespace EShop.Data.DTOs.ProductDTO
     public class CreateColorDto
     {
         public string Title { get; set; }
-        public string ColorId { get; set; } 
+        public string ColorCode { get; set; } 
     }
 }

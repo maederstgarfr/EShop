@@ -25,7 +25,7 @@ namespace EShop.Application.Utils
         #endregion
 
         #region ProductGallery
-        public static string ProductGallery = "/content/images/ProductImage/origin";
+        public static string ProductGalleryImage = "/content/images/ProductImage/origin";
         public static string ProductGalleryServer =
             Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/content/images/ProductImages/origin");
 

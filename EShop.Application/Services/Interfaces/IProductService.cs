@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EShop.Data.DTOs.ProductCategoryDto;
 using EShop.Data.DTOs.ProductDTO;
+using EShop.Data.Entities.ProductEntities;
 
 namespace EShop.Application.Services.Interfaces
 {
@@ -12,6 +13,7 @@ namespace EShop.Application.Services.Interfaces
     {
         #region Product
         Task<FilterProductDto> FilterProduct(FilterProductDto dto);
+        Task<List<ProductColor>> GetAllProductColors();
         Task<ProductDetailDto> ProductDetail(long productId);
         Task<CreateProductResult> CreateProduct(CreateProductDto dto);
         Task<EditProductDto> EditProduct(long productId);
