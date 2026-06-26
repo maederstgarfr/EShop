@@ -661,9 +661,14 @@ namespace EShop.Application.Services.Implementations
         #endregion
 
         #region Feature
-        public Task<bool> DeleteFeature(long featuerId)
+        public async Task<bool> DeleteFeature(long featuerId)
         {
-            throw new NotImplementedException();
+            var data = await _featureRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == featuerId);
+            if (data == null) return false;
+            
+            await _featureRepository.DeletePermanent(data);
+            await _featureRepository.SaveAsync();
+            return true;
         }
         #endregion
 
