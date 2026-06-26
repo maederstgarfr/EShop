@@ -10,7 +10,7 @@ namespace EShop.Data.Entities.OrderEntities
 {
     public class OrderDetail : BaseEntitiy
     {
-        public long productId { get; set; }
-        public Product product { get; set; }
+        public long ProductVariantId { get; set; }
+        public ProductVariant ProductVariant { get; set; }
     }
 }

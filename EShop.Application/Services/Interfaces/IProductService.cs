@@ -41,8 +41,8 @@ namespace EShop.Application.Services.Interfaces
 
         #region ProductVariant
         Task CreateProductVariant(CreateProductVariantDto dto);
-        Task<EditColorDto> GetEditProductVariant(long variantId);
-        Task EditProductVariant(EditColorDto dto);
+        Task<EditProductVariantDto> GetEditProductVariant(long variantId);
+        Task EditProductVariant(EditProductVariantDto dto);
         Task<bool> DeleteProductVariant(long variantId);
         #endregion
 
@@ -52,7 +52,7 @@ namespace EShop.Application.Services.Interfaces
         #endregion
 
         #region Gallery
-        Task CreateGallery(CreateCategoryDto dto);
+        Task CreateGallery(CreateGalleryDto dto);
         Task<EditGalleryDto> GetEditGallery(long galleryId);
         Task EditGallery(EditGalleryDto dto);
         Task<bool> DeleteGallery(long galleryId);

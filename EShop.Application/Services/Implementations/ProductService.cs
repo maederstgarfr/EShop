@@ -218,7 +218,7 @@ namespace EShop.Application.Services.Implementations
         public async Task<bool> DeleteProduct(long ProductId)
         {
             #region order
-            var productOrdered = await _orderDetail.GetQuery().AllAsync(d => d.Id == ProductId);
+            var productOrdered = await _orderDetail.GetQuery().Include(d=>d.ProductVariant).AllAsync(d => d.ProductVariant.ProductId == ProductId);
             if (productOrdered) return false;
             #endregion
 
@@ -613,7 +613,7 @@ namespace EShop.Application.Services.Implementations
         #endregion
 
         #region Gallery
-        public async Task CreateGallery(CreateCategoryDto dto)
+        public async Task CreateGallery(CreateGalleryDto dto)
         {
             var gallery = new ProductGallery
             {
@@ -673,27 +673,54 @@ namespace EShop.Application.Services.Implementations
         #endregion
 
         #region Variant
-        public Task CreateProductVariant(CreateProductVariantDto dto)
+        public async Task CreateProductVariant(CreateProductVariantDto dto)
         {
-            throw new NotImplementedException();
+            var variant = new ProductVariant
+            {
+                ProductId = dto.ProductId,
+                Price = dto.Price,
+                ColorId = dto.ColorId,
+                StockCount = dto.StockCount,
+                Product = await _productRepository.GetEntityById(dto.ProductId),
+                ProductColor= await _colorRepository.GetEntityById(dto.ColorId)
+            };
+            await _variantRepository.AddEntity(variant);
+            await _variantRepository.SaveAsync();
         }
 
-        public Task<EditColorDto> GetEditProductVariant(long variantId)
+        public async Task<EditProductVariantDto> GetEditProductVariant(long variantId)
         {
-            throw new NotImplementedException();
+            var data = await _variantRepository.GetEntityById(variantId);
+            return new EditProductVariantDto
+            {
+                Price = data.Price,
+                ColorId = data.ColorId,
+                StockCount = data.StockCount,
+                VarianttId = data.Id
+            };
         }
 
-        public Task EditProductVariant(EditColorDto dto)
+        public async Task EditProductVariant(EditProductVariantDto dto)
         {
-            throw new NotImplementedException();
-        }
+            var data= await _variantRepository.GetEntityById(dto.VarianttId);
+            data.Price = dto.Price;
+            data.ColorId = dto.ColorId;
+            data.StockCount = dto.StockCount;
+            data.ProductColor = await _colorRepository.GetEntityById(dto.ColorId);
 
-        public Task<bool> DeleteProductVariant(long variantId)
+            _variantRepository.EditEntity(data);
+            await _variantRepository.SaveAsync();
+        }
+        public async Task<bool> DeleteProductVariant(long variantId)
         {
-            throw new NotImplementedException();
-        }
+            var InUse = await _orderDetail.GetQuery().AnyAsync(v => v.ProductVariantId==variantId);
+            if (InUse) return false;
 
-        
+            var data = await _variantRepository.GetEntityById(variantId);
+            await _variantRepository.DeletePermanent(data);
+            await _variantRepository.SaveAsync();
+            return true;
+        }       
         #endregion
     }
 }
