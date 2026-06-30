@@ -19,6 +19,7 @@ namespace EShop.Application.Services.Interfaces
         Task<EditProductDto> EditProduct(long productId);
         Task<EditProductResult> EditProduct(EditProductDto dto);
         Task<bool> DeleteProduct(long ProductId);
+        Task<EditProductDto> GetEditProduct(long productId);
         #endregion
 
         #region Categories

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EShop.Web.Areas.Admin.ViewComponent
+namespace EShop.Web.Areas.Admin.ViewComponents
 {
     public class AdminHeaderViewComponent: ViewComponent
     {

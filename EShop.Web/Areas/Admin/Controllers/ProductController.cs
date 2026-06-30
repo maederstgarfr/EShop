@@ -121,22 +121,43 @@ namespace EShop.Web.Areas.Admin.Controllers
                 var res = await _productService.EditProduct(dto);
                 switch (res)
                 {
-                    case EditProductResult.Success:
-                        break;
+
                     case EditProductResult.Error:
+                        TempData[ErrorMessage] = "عملیات با خطا مواجه شد";
                         break;
                     case EditProductResult.ImageNotSaved:
+                        TempData[ErrorMessage] = "در ذخیره سازی تصویر خطایی رخ داد";
                         break;
                     case EditProductResult.BrandNotFound:
+                        TempData[ErrorMessage] = "برند یافت نشد";
                         break;
                     case EditProductResult.CategorynotFound:
+                        TempData[ErrorMessage] = "دسته بندی یافت نشد";
+                        break;
+                    case EditProductResult.Success:
+                        TempData[ErrorMessage] = "عملیات با موفقیت انجام شد";
+                        return RedirectToAction("ProductDetail", new { productId = dto.ProductId });
                         break;
                 }
-                return View();
-
             }
-            
-            #endregion
+            return View();
         }
+        [Route("Delete_product")]
+        public async Task<IActionResult> DeleteProduct(long productId)
+        {
+            var res = await _productService.DeleteProduct(productId);
+            if(res)
+            {
+                TempData[ErrorMessage] = DeleteText;
+                return RedirectToAction("FilterProducts");
+            }
+            TempData[ErrorMessage] = "محصولاتی که سابقا خریداری شدند امکان حذف شدن ندارند";
+            return RedirectToAction("FilterProducts");
+
+        }
+
+
+        #endregion
+
     }
 }

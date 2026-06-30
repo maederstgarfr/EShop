@@ -15,5 +15,12 @@ namespace EShop.Web.Areas.Admin.Controllers
         protected string SuccessMessage = "SuccessMessage";
         protected string InfoMessage = "InfoMessage";
         protected string WarningMessage = "WarningMessage";
+
+
+        protected string SuccessText= "عملیات با موفقیت انجام شد";
+        protected string ErrorText = "عملیات با خطا مواجه شد";
+        protected string DeleteText = "دیتا با موفقیت حذف شد";
+        protected string ImageNotsavedText = "در ذخیره سازی تصویر خطایی رخ داد";
+
     }
 }
