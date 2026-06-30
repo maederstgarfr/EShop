@@ -33,6 +33,7 @@ namespace EShop.Application.Services.Implementations
         private readonly IGenericRepository<OrderDetail> _orderDetail;
 
         #endregion
+
         #region Product
         public ProductService(IGenericRepository<Product> productRepository, IGenericRepository<ProductCategory> categoryRepository, IGenericRepository<ProductVariant> variantRepository, IGenericRepository<ProductComment> commentRepository, IGenericRepository<ProductColor> colorRepository, IGenericRepository<Brand> brandRepository,IGenericRepository<ProductSelectedBrand> selectedBrandRepository, IGenericRepository<ProductSelectedCategory> selectedCategoryRepository, IGenericRepository<ProductGallery> galleryRepository, IGenericRepository<ProductFeature> featureRepository)
         {
@@ -545,6 +546,10 @@ namespace EShop.Application.Services.Implementations
             _selectedCategoryRepository.DeletePermanentEntities(selectedCategory);
             await _selectedCategoryRepository.SaveAsync();
         }
+        public async Task<List<ProductCategory>> GetAllProductCategories()
+        {
+            return await _categoryRepository.GetQuery().Include(d => d.subCategories).Where(d => d.IsActive).ToListAsync();
+        }
         #endregion
 
         #region Color
@@ -720,7 +725,126 @@ namespace EShop.Application.Services.Implementations
             await _variantRepository.DeletePermanent(data);
             await _variantRepository.SaveAsync();
             return true;
-        }       
+        }
         #endregion
+
+        #region Brand
+        public async Task<FilterBrandDto> FilterBrand(FilterBrandDto filter)
+        {
+            #region query
+            var query = _brandRepository.GetQuery().OrderByDescending(d => d.CreateDate).AsQueryable();
+            #endregion
+
+            #region Filter
+            if (!string.IsNullOrEmpty(filter.Title))
+            {
+                query = query.Where(c => EF.Functions.Like(c.Title, $"{ filter.Title}"));
+            }
+            if (!string.IsNullOrEmpty(filter.Url))
+            {
+                query = query.Where(c => EF.Functions.Like(c.Url, $"{ filter.Url}"));
+            }
+            #endregion
+
+            #region Paging
+            var pager = Pager.Build(filter.PageId, await query.CountAsync(), filter.TakeEntitiy, filter.HowManyShowPageAfterAndBefore);
+            var allEntities = await query.Paging(pager).ToListAsync();
+            #endregion
+            return filter.SetData(allEntities).SetPaging(pager);
+
+        }
+
+        public async Task<bool> CreateBrand(CreatBrandDto dto)
+        {
+            var data = new Brand
+            {
+                Title=dto.Title,
+                Url=dto.Url,
+                Order=dto.Order
+            };
+            #region Main Image
+            var mainImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.ImageName.FileName);
+            var res = dto.ImageName.AddImageToServer(mainImageName, PathExtention.BrandServer, 150, 150, PathExtention.BrandThumbServer);
+            if (res)
+            {
+                data.ImageName = mainImageName;
+
+            }
+            else
+            {
+                return false;
+            }
+            #endregion
+
+            await _brandRepository.AddEntity(data);
+            await _brandRepository.SaveAsync();
+            return true;
+        }
+
+        public async Task<bool> EditBrand(EditBrandDto dto)
+        {
+            var data = await _brandRepository.GetEntityById(dto.BrandId);
+
+            data.Title = dto.Title;
+            data.Order = dto.Order;
+            data.Url = dto.Url;
+
+            if(dto.ImageName!= null)
+            {
+                #region Main Image
+                var mainImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.ImageName.FileName);
+                var res = dto.ImageName.AddImageToServer(mainImageName, PathExtention.BrandServer, 150, 150, PathExtention.BrandThumbServer);
+                if (res)
+                {
+                    data.ImageName = mainImageName;
+
+                }
+                else
+                {
+                    return false;
+                }
+                #endregion
+
+                
+            }
+            _brandRepository.EditEntity(data);
+            await _brandRepository.SaveAsync();
+            return true;
+
+        }
+
+        public async Task<EditBrandDto> GetEditBrand(long brandId)
+        {
+            var data = await _brandRepository.GetEntityById(brandId);
+            return new EditBrandDto
+            {
+                Order = data.Order,
+                Title = data.Title,
+                Url= data.Url,
+                BrandId=data.Id
+            };
+
+        }
+
+        public async Task<bool> DeleteBrand(long brandId)
+        {
+            var InUse = await _brandRepository.GetQuery().AnyAsync(d => d.Id == brandId);
+            if (InUse) return false;
+
+            var data = await _brandRepository.GetEntityById(brandId);
+            await _brandRepository.DeletePermanent(data);
+            await _brandRepository.SaveAsync();
+            return true;
+        }
+
+        public Task<List<Brand>> GetAllBrands()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
+
+
     }
 }

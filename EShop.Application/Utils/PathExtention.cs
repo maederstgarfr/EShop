@@ -43,5 +43,15 @@ namespace EShop.Application.Utils
         public static string BannerThumbServer =
             Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/content/images/ProductImages/thumb");
         #endregion
+
+        #region Brand
+        public static string Brand = "/content/images/ProductImage/origin";
+        public static string BrandServer =
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/content/images/ProductImages/origin");
+
+        public static string BrandThumb = "/content/images/ProductImage/thumb";
+        public static string BrandThumbServer =
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/content/images/ProductImages/thumb");
+        #endregion
     }
 }

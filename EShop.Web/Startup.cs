@@ -31,6 +31,7 @@ public class Startup
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ISmsService, SmsService>();
+        services.AddScoped<IProductService, ProductService>();
         services.AddHttpClient<ICaptchaValidator,GoogleReCaptchaValidator>();
         services.AddSingleton<HtmlEncoder>(HtmlEncoder
             .Create(allowedRanges: new[] {UnicodeRanges.BasicLatin, UnicodeRanges.Arabic}));

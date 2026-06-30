@@ -10,6 +10,7 @@ namespace EShop.Data.Entities.ProductEntities
     public class Brand :BaseEntitiy
     {
         public string Title { get; set; }
+        public string Url { get; set; }   
         public string ImageName { get; set; }
         public int Order { get; set; }
         public ICollection<ProductSelectedBrand> ProductSelectedBrands { get; set; }
