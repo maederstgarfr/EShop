@@ -230,7 +230,63 @@ namespace EShop.Web.Areas.Admin.Controllers
             TempData[ErrorMessage] = "دسته بندی که محصولی را شامل میشود امکان حذف شدن ندارد";
             return RedirectToAction("FilterCategories");
         }
-
         #endregion
+
+        #region Color
+        [HttpGet("Filter-color")]
+        public async Task<IActionResult> FilterColor(FilterColorDto filter)
+        {
+            var model = await _productService.FilterColor(filter);
+            return View(model);
+        }
+
+        [HttpGet("create-color")]
+        public async Task<IActionResult> CreateColor()
+        {
+            return View();
+        }
+        [HttpPost("create-color"),ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateColor(CreateColorDto dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
+            await _productService.CreateColor(dto);
+            TempData[SuccessMessage] = SuccessText;
+            return View();
+        }
+
+
+        [HttpGet("edit-color")]
+        public async Task<IActionResult> EditColor(long colorId)
+        {
+            var model = await _productService.GetEditColor(colorId);
+            return View(model);
+        }
+        [HttpPost("edit-color"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditColor(EditColorDto dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
+            await _productService.EditColor(dto);
+            TempData[SuccessMessage] = SuccessText;
+            return View();
+        }
+
+        [Route("delete-color")]
+        public async Task<IActionResult> DeleteColor(long colorId)
+        {
+            var res = await _productService.DeleteColor(colorId);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+                return RedirectToAction("FilterColors");
+                
+            }
+            TempData[ErrorMessage] = "رنگی که در یک نمونه محصول به کار رفته امکان حذف شدن ندارد";
+            return RedirectToAction("FilterColors");
+
+        }
+        #endregion
+
     }
+
+
 }
