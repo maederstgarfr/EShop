@@ -265,7 +265,7 @@ namespace EShop.Application.Services.Implementations
         public async Task<bool> EditCategory(EditCategoryDto dto)
         {
             #region Check URl
-            var UrlInUse = await _categoryRepository.GetQuery().AnyAsync(c => c.Url == dto.Url);
+            var UrlInUse = await _categoryRepository.GetQuery().AnyAsync(c => c.Url == dto.Url && c.Id !=dto.CategoryId);
             if (UrlInUse) return false;
             #endregion  
 
@@ -838,6 +838,11 @@ namespace EShop.Application.Services.Implementations
         }
 
         public Task<List<Brand>> GetAllBrands()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<EditProductDto> GetEditProduct(long productId)
         {
             throw new NotImplementedException();
         }

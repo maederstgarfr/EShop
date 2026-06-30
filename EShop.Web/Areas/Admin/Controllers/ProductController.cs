@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EShop.Application.Services.Interfaces;
 using EShop.Application.Utils;
+using EShop.Data.DTOs.ProductCategoryDto;
 using EShop.Data.DTOs.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -159,5 +160,77 @@ namespace EShop.Web.Areas.Admin.Controllers
 
         #endregion
 
+        #region Category
+        [HttpGet("product-category")]
+        public async Task<IActionResult> FilterCategories(FilterCategoryDto filter)
+        {
+            var model = _productService.FilterCategory(filter);
+            return View(model);
+        }
+        [HttpGet("create-category")]
+        public async Task<IActionResult> CreateCategory()
+        {
+            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+            return View();
+        }
+        [HttpPost("create-category")]
+        public async Task<IActionResult> CreateCategory(CreateCategoryDto dto)
+        {
+            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+
+            if (!ModelState.IsValid) return View(dto);
+
+            var res = await _productService.CreateCategory(dto);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+                return RedirectToAction("FilterCategories");
+               
+            }
+            TempData[ErrorMessage] = "Url وارد شده تکراری میباشد";
+            return View(dto);
+        }
+
+        [HttpGet("edit-category")]
+        public async Task<IActionResult> EditCategory(long categoryId)
+        {
+            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+            var model = await _productService.GetEditCategory(categoryId);
+            return View(model);
+        }
+        [HttpPost("edit-category")]
+        public async Task<IActionResult> EditCategory(EditCategoryDto dto)
+        {
+            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+
+            if (!ModelState.IsValid) return View(dto);
+
+            var res = await _productService.EditCategory(dto);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+                return RedirectToAction("FilterCategories");
+
+            }
+            TempData[ErrorMessage] = "Url وارد شده تکراری میباشد";
+            return View(dto);
+        }
+
+
+        [Route("delete-category")]
+        public async Task<IActionResult> DeleteCategory(long categoryId)
+        {
+
+            var res = await _productService.DeleteCategory(categoryId);
+            if (res)
+            {
+                TempData[ErrorMessage] = DeleteText;
+                return RedirectToAction("FilterCategories");
+            }
+            TempData[ErrorMessage] = "دسته بندی که محصولی را شامل میشود امکان حذف شدن ندارد";
+            return RedirectToAction("FilterCategories");
+        }
+
+        #endregion
     }
 }
