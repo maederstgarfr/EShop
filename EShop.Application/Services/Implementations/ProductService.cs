@@ -675,6 +675,28 @@ namespace EShop.Application.Services.Implementations
             await _featureRepository.SaveAsync();
             return true;
         }
+        public async Task EditFeature(EditFeatuteDto dto)
+        {
+            var data = await _featureRepository.GetEntityById(dto.FeatuerId);
+            data.Order = data.Order;
+            data.Title = data.Title;
+            data.Value = data.Value;
+
+            _featureRepository.EditEntity(data);
+            await _featureRepository.SaveAsync();
+        }
+
+        public async Task<EditFeatuteDto> GetEditFeature(long featuerId)
+        {
+            var data = await _featureRepository.GetEntityById(featuerId);
+            return new EditFeatuteDto
+            {
+                Order=data.Order,
+                Title=data.Title,
+                FeatuerId=data.Id,
+                Value=data.Value
+            };
+        }
         #endregion
 
         #region Variant
@@ -846,6 +868,8 @@ namespace EShop.Application.Services.Implementations
         {
             throw new NotImplementedException();
         }
+
+        
         #endregion
 
 

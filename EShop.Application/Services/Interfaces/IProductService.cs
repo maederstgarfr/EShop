@@ -50,7 +50,8 @@ namespace EShop.Application.Services.Interfaces
 
         #region Feature
         Task<bool> DeleteFeature(long featuerId);
-
+        Task EditFeature(EditFeatuteDto dto);
+        Task<EditFeatuteDto> GetEditFeature(long featuerId);
         #endregion
 
         #region Gallery
