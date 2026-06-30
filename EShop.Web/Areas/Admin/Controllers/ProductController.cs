@@ -251,7 +251,7 @@ namespace EShop.Web.Areas.Admin.Controllers
             if (!ModelState.IsValid) return View(dto);
             await _productService.CreateColor(dto);
             TempData[SuccessMessage] = SuccessText;
-            return View();
+            return RedirectToAction("Filtercolors");
         }
 
 
@@ -267,7 +267,7 @@ namespace EShop.Web.Areas.Admin.Controllers
             if (!ModelState.IsValid) return View(dto);
             await _productService.EditColor(dto);
             TempData[SuccessMessage] = SuccessText;
-            return View();
+            return RedirectToAction("Filtercolors");
         }
 
         [Route("delete-color")]
@@ -286,6 +286,39 @@ namespace EShop.Web.Areas.Admin.Controllers
         }
         #endregion
 
+        #region Features
+
+        [HttpGet("edit-Feature")]
+        public async Task<IActionResult> EditFeature(long featureId)
+        {
+            var model = await _productService.GetEditFeature(featureId);
+            return View(model);
+        }
+        [HttpPost("edit-Feature"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditFeature(EditFeatuteDto dto, long productId)
+        {
+            if (!ModelState.IsValid) return View(dto);
+            await _productService.EditFeature(dto);
+            TempData[SuccessMessage] = SuccessText;
+            return RedirectToAction("ProductDetail", new { productId = productId });
+
+        }
+
+        [Route("delete-Feature")]
+        public async Task<IActionResult> DeleteFeature(long featureId, long productId)
+        {
+            var res = await _productService.DeleteFeature(featureId);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+
+
+            }
+            TempData[ErrorMessage] = "رنگی که در یک نمونه محصول به کار رفته امکان حذف شدن ندارد";
+            return RedirectToAction("ProductDetail", new { productId = productId });
+
+        }
+        #endregion
     }
 
 
