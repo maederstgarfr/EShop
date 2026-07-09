@@ -1,1 +1,195 @@
 ﻿
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <partial name="_AdminMetaTags.cshtml"/>
+    <title>@ViewData["Title"]</title>
+    
+</head>
+<body>
+    <div class="app-shell">
+        <div id="sidebar-mount"></div>
+        <div class="app-main">
+            <div id="topbar-mount"></div>
+            <div class="app-content">
+                @await Component.InvokeAsync("AdminHeader")
+              
+
+                <!-- KPI cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card linkable" onclick="location.href='customers.html'">
+                        <div class="kpi-top"><span class="kpi-label">مشتریان</span><div class="kpi-icon red"></div></div>
+                        <div class="kpi-value" id="kv-customers"></div>
+                        <div class="kpi-delta down" id="kd-customers"></div>
+                    </div>
+                    <div class="kpi-card linkable" onclick="location.href='orders.html'">
+                        <div class="kpi-top"><span class="kpi-label">سفارشات</span><div class="kpi-icon amber"></div></div>
+                        <div class="kpi-value" id="kv-orders"></div>
+                        <div class="kpi-delta up" id="kd-orders"></div>
+                    </div>
+                    <div class="kpi-card linkable" onclick="location.href='reports.html#revenue'">
+                        <div class="kpi-top"><span class="kpi-label">درآمد</span><div class="kpi-icon green"></div></div>
+                        <div class="kpi-value" id="kv-revenue"></div>
+                        <div class="kpi-delta up" id="kd-revenue"></div>
+                    </div>
+                    <div class="kpi-card linkable" onclick="location.href='reports.html#visits'">
+                        <div class="kpi-top"><span class="kpi-label">بازدید</span><div class="kpi-icon blue"></div></div>
+                        <div class="kpi-value" id="kv-visits"></div>
+                        <div class="kpi-delta up" id="kd-visits"></div>
+                    </div>
+                </div>
+
+                <!-- overview -->
+                <div class="card" style="margin-bottom:18px">
+                    <div class="card-head">
+                        <span class="select-chip">۳۰ روز اخیر <span id="ic-chev"></span></span>
+                        <h3>بررسی اجمالی</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="split-row">
+                            <div class="col-main">
+                                <div class="bars-row" id="bars-row"></div>
+                                <div class="chart-grid-row" id="bars-labels"></div>
+                            </div>
+                            <div class="col-side">
+                                <div class="muted" style="font-size:12.5px;margin-bottom:4px">درآمد کل</div>
+                                <div style="font-size:23px;font-weight:800;margin-bottom:4px" id="side-total"></div>
+                                <div class="kpi-delta up" id="side-delta" style="margin-bottom:14px"></div>
+                                <div class="summary-row"><span class="l">سفارشات</span><span class="v" id="sr-orders"></span></div>
+                                <div class="summary-row"><span class="l">مشتریان</span><span class="v" id="sr-customers"></span></div>
+                                <div class="summary-row"><span class="l">نرخ تبدیل</span><span class="v" id="sr-conv"></span></div>
+                                <div class="summary-total"><span>میانگین سفارش</span><span class="v" id="sr-avg"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- bottom grid -->
+                <div class="grid-4" style="grid-template-columns: 1.1fr 1.3fr 1.3fr 1.1fr;align-items:start;">
+
+                    <!-- goal gauge -->
+                    <div class="card">
+                        <div class="card-head"><h3>درآمد این ماه</h3></div>
+                        <div class="card-body gauge-wrap">
+                            <div class="gauge" id="gauge"></div>
+                            <div class="goal-amount" id="goal-amount"></div>
+                            <div class="goal-sub" id="goal-sub"></div>
+                            <div class="goal-delta" id="goal-delta"></div>
+                        </div>
+                    </div>
+
+                    <!-- top products -->
+                    <div class="card">
+                        <div class="card-head"><h3>محصولات پرفروش</h3><a class="link-more" href="products.html">مشاهده همه <span class="chevl-1"></span></a></div>
+                        <div class="card-body" id="top-products"></div>
+                    </div>
+
+                    <!-- recent orders -->
+                    <div class="card">
+                        <div class="card-head"><h3>آخرین سفارشات</h3><a class="link-more" href="orders.html">مشاهده همه <span class="chevl-2"></span></a></div>
+                        <div class="card-body" id="recent-orders"></div>
+                    </div>
+
+                    <!-- activity -->
+                    <div class="card">
+                        <div class="card-head"><h3>فعالیت‌های اخیر</h3></div>
+                        <div class="card-body" id="activity-feed"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <partial name="_AdminMobileMenu" />
+    <partial name="_AdminFooterRef" />
+    <script>
+        mountShell("dashboard", { title: "داشبورد" });
+
+        document.getElementById("ic-chev").innerHTML = ICONS.chev;
+        document.querySelector(".chevl-1").innerHTML = ICONS.chevLeft;
+        document.querySelector(".chevl-2").innerHTML = ICONS.chevLeft;
+
+        // KPI icons
+        document.querySelectorAll(".kpi-icon").forEach((el, i) => {
+            const icons = ["users", "cart", "card", "chart"];
+            el.innerHTML = ICONS[icons[i]];
+        });
+
+        const K = FARNOD_DATA.kpis;
+        function deltaHtml(d, dir) {
+            const arrow = dir === "up" ? ICONS.arrowUp : ICONS.arrowDown;
+            return `${arrow}<span>${d}%</span><span class="muted">نسبت به ماه قبل</span>`;
+        }
+        document.getElementById("kv-customers").textContent = fmtNum(K.customers.value);
+        document.getElementById("kd-customers").innerHTML = deltaHtml(K.customers.delta, K.customers.dir);
+        document.getElementById("kv-orders").textContent = fmtNum(K.orders.value);
+        document.getElementById("kd-orders").innerHTML = deltaHtml(K.orders.delta, K.orders.dir);
+        document.getElementById("kv-revenue").textContent = fmtToman(K.revenue.value);
+        document.getElementById("kd-revenue").innerHTML = deltaHtml(K.revenue.delta, K.revenue.dir);
+        document.getElementById("kv-visits").textContent = fmtNum(K.visits.value);
+        document.getElementById("kd-visits").innerHTML = deltaHtml(K.visits.delta, K.visits.dir);
+
+        // bars chart
+        const maxV = Math.max(...FARNOD_DATA.monthlyRevenue.map(d => d.v));
+        document.getElementById("bars-row").innerHTML = FARNOD_DATA.monthlyRevenue.map(d => {
+            const h = (d.v / maxV * 100).toFixed(0);
+            const last = d.m === FARNOD_DATA.monthlyRevenue[FARNOD_DATA.monthlyRevenue.length - 1].m;
+            return `<div class="bar-col" title="${d.m}: ${d.v} میلیارد">
+                <div class="bar ${last ? '' : ''}" style="height:${h}%"></div>
+              </div>`;
+        }).join("");
+        document.getElementById("bars-labels").innerHTML = FARNOD_DATA.monthlyRevenue.map(d => `<span>${d.m}</span>`).join("");
+
+        document.getElementById("side-total").textContent = fmtToman(K.revenue.value);
+        document.getElementById("side-delta").innerHTML = `${ICONS.arrowUp}<span>${K.revenue.delta}%</span><span class="muted">نسبت به دوره قبل</span>`;
+        document.getElementById("sr-orders").textContent = fmtNum(K.orders.value);
+        document.getElementById("sr-customers").textContent = fmtNum(K.customers.value);
+        document.getElementById("sr-conv").textContent = "۳.۱٪";
+        document.getElementById("sr-avg").textContent = fmtToman(4365000);
+
+        // gauge
+        const g = FARNOD_DATA.goal;
+        document.getElementById("gauge").style.background = `conic-gradient(var(--brand-600) ${g.pct * 3.6}deg, var(--mist-100) 0deg)`;
+        document.getElementById("gauge").innerHTML = `<div class="gauge-inner"><div class="gauge-pct">${g.pct}%</div><div class="gauge-cap">از هدف ماهانه</div></div>`;
+        document.getElementById("goal-amount").textContent = fmtToman(g.current);
+        document.getElementById("goal-sub").textContent = `از هدف ماهانه ${fmtToman(g.target)}`;
+        document.getElementById("goal-delta").innerHTML = `${ICONS.arrowUp}<span>${g.delta}% نسبت به ماه قبل</span>`;
+
+        // top products (best sellers, sorted)
+        const topP = [...FARNOD_DATA.products].sort((a, b) => b.sold - a.sold).slice(0, 4);
+        document.getElementById("top-products").innerHTML = topP.map(p => `
+      <div class="row-item" onclick="location.href='product-detail.html?id=${p.id}'">
+        <div class="row-icon" style="background:${p.color}1A;color:${p.color};font-size:19px">${p.img}</div>
+        <div class="row-main">
+          <div class="row-title">${p.name}</div>
+          <div class="row-sub">${fmtNum(p.sold)} عدد فروش</div>
+        </div>
+        <div class="row-end"><div class="amt">${fmtToman(p.price)}</div></div>
+      </div>`).join("");
+
+        // recent orders
+        const recentO = FARNOD_DATA.orders.slice(0, 4);
+        document.getElementById("recent-orders").innerHTML = recentO.map(o => `
+      <div class="row-item" onclick="location.href='order-detail.html?id=${o.id}'">
+        <div class="row-icon" style="background:var(--brand-50);color:var(--brand-600)">${ICONS.receipt}</div>
+        <div class="row-main">
+          <div class="row-title">سفارش #${o.id}</div>
+          <div class="row-sub">${o.date}</div>
+        </div>
+        <div class="row-end">${statusBadge(o.status)}<div class="sub">${fmtToman(o.amount)}</div></div>
+      </div>`).join("");
+
+        // activity feed
+        document.getElementById("activity-feed").innerHTML = FARNOD_DATA.activities.map(a => `
+      <div class="row-item" style="cursor:default">
+        ${activityIcon(a.type)}
+        <div class="row-main">
+          <div class="row-title">${a.text}</div>
+          <div class="row-sub">${a.sub}</div>
+        </div>
+        <div class="row-end"><div class="sub">${a.time}</div></div>
+      </div>`).join("");
+    </script>
+</body>
+</html>

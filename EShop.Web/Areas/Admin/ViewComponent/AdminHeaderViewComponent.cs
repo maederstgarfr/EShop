@@ -10,7 +10,7 @@ namespace EShop.Web.Areas.Admin.ViewComponents
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View();
+            return View("AdminHeader");
         }
     }
 }

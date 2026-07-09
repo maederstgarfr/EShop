@@ -102,7 +102,9 @@ namespace EShop.Application.Utils
 
             return text;
         }
-
+        public static string ToRial(this int Price)
+        {
+            return Price.ToString("#, 0 ");
 
     }
 }

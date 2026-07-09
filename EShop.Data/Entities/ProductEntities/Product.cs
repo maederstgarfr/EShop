@@ -21,10 +21,10 @@ namespace EShop.Data.Entities.ProductEntities
         #endregion
         #region Relations
         public ICollection<ProductSelectedCategory> SelectedCategories { get; set; }
-        public ICollection<ProductComment> ProductComments { get; set; }
-        public ICollection<ProductVariant> ProductVariants { get; set; }
-        public ICollection<ProductGallery> ProductGalleries { get; set; }
-        public ICollection<ProductFeature> ProductFeatures { get; set; }
+        public ICollection<ProductComment>? ProductComments { get; set; }
+        public ICollection<ProductVariant>? ProductVariants { get; set; }
+        public ICollection<ProductGallery>? ProductGalleries { get; set; }
+        public ICollection<ProductFeature>? ProductFeatures { get; set; }
 
 
         #endregion

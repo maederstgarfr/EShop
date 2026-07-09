@@ -25,7 +25,7 @@ namespace EShop.Web.Areas.Admin.Controllers
         public async Task<IActionResult> FilterProducts(FilterProductDto filter)
         {
             var model = await _productService.FilterProduct(filter);
-
+            ViewData["Categories"] = await _productService.GetAllProductCategories();
             return View(model);
         }
         [HttpGet("Product-Detail-{productId}")]
@@ -317,6 +317,172 @@ namespace EShop.Web.Areas.Admin.Controllers
             TempData[ErrorMessage] = "رنگی که در یک نمونه محصول به کار رفته امکان حذف شدن ندارد";
             return RedirectToAction("ProductDetail", new { productId = productId });
 
+        }
+        #endregion
+
+        #region Variant
+        [HttpGet("create-variant")]
+        public IActionResult CreateVariant(long productId)
+        {
+            TempData["ProductId"] = productId;
+            return View();
+        }
+
+        [HttpPost("create-variant"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateVariant(CreateProductVariantDto dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
+
+            await _productService.CreateProductVariant(dto);
+            TempData[SuccessMessage] = SuccessText;
+            return RedirectToAction("ProductDetail", new { productId = dto.ProductId });
+        }
+
+        [HttpGet("Edit-variant")]
+        public async Task<IActionResult> EditVariant(long variantId)
+        {
+            var model = _productService.GetEditProductVariant(variantId);
+            return View(model);
+        }
+
+        [HttpPost("Edit-variant"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditVariant(EditProductVariantDto dto, long productId)
+        {
+            if (!ModelState.IsValid) return View(dto);
+
+            await _productService.EditProductVariant(dto);
+            TempData[SuccessMessage] = SuccessText;
+            return RedirectToAction("ProductDetail", new { productId = productId });
+        }
+
+        [Route("delete-variant")]
+        public async Task<IActionResult> DeleteVariant(long variantId, long productId)
+        {
+            var res = await _productService.DeleteProductVariant(variantId);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+                return RedirectToAction("ProductDetail", new { productId = productId });
+
+            }
+            TempData[ErrorMessage] = "گونه ای از محصول که سابقا خریداری شده امکان حذف شدن ندارد";
+            return RedirectToAction("ProductDetail", new { productId = productId });
+
+        }
+        #endregion
+
+        #region Gallery
+        [HttpGet("create-Gallery")]
+        public IActionResult CreateGallery(long productId)
+        {
+            TempData["ProductId"] = productId;
+            return View();
+        }
+
+        [HttpPost("create-gallery"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateGallery(CreateGalleryDto dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
+
+            await _productService.CreateGallery(dto);
+            TempData[SuccessMessage] = SuccessText;
+            return RedirectToAction("ProductDetail", new { productId = dto.ProductId });
+        }
+
+
+        [HttpPost("Edit-Gallery"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditGallery(EditGalleryDto dto, long productId)
+        {
+            if (!ModelState.IsValid) return View(dto);
+
+            await _productService.EditGallery(dto);
+            TempData[SuccessMessage] = SuccessText;
+            return RedirectToAction("ProductDetail", new { productId = productId });
+        }
+
+        [Route("delete-gallery")]
+        public async Task<IActionResult> DeleteGallery(long galleryId, long productId)
+        {
+            var res = await _productService.DeleteGallery(galleryId);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+                return RedirectToAction("ProductDetail", new { productId = productId });
+
+            }
+            TempData[ErrorMessage] = "تصویر گالری پیدا نشد";
+            return RedirectToAction("ProductDetail", new { productId = productId });
+
+        }
+        #endregion
+
+        #region Brand
+        [HttpGet("product-brand")]
+        public async Task<IActionResult> FilterBrand(FilterBrandDto filter)
+        {
+            var model = _productService.FilterBrand(filter);
+            return View(model);
+        }
+        [HttpGet("create-brand")]
+        public IActionResult CreateBrand()
+        {
+            return View();
+        }
+        [HttpPost("create-brand")]
+        public async Task<IActionResult> CreateBrand(CreatBrandDto dto)
+        {
+
+            if (!ModelState.IsValid) return View(dto);
+
+            var res = await _productService.CreateBrand(dto);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+                return RedirectToAction("FilterBrand");
+
+            }
+            TempData[ErrorMessage] = "Url وارد شده تکراری میباشد";
+            return View(dto);
+        }
+
+        [HttpGet("edit-brand")]
+        public async Task<IActionResult> EditBrand(long brandId)
+        {
+            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+            var model = await _productService.GetEditBrand(brandId);
+            return View(model);
+        }
+        [HttpPost("edit-brand")]
+        public async Task<IActionResult> EditBrand(EditBrandDto dto)
+        {
+            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+
+            if (!ModelState.IsValid) return View(dto);
+
+            var res = await _productService.EditBrand(dto);
+            if (res)
+            {
+                TempData[SuccessMessage] = SuccessText;
+                return RedirectToAction("FilterBrand");
+
+            }
+            TempData[ErrorMessage] = "Url وارد شده تکراری میباشد";
+            return View(dto);
+        }
+
+
+        [Route("delete-Brand")]
+        public async Task<IActionResult> DeleteBrand(long BrandId)
+        {
+
+            var res = await _productService.DeleteBrand(BrandId);
+            if (res)
+            {
+                TempData[ErrorMessage] = DeleteText;
+                return RedirectToAction("FilterBrand");
+            }
+            TempData[ErrorMessage] = "محصولی شامل این برند میشود وامکان حذف برند وجود ندارد";
+            return RedirectToAction("FilterBrand");
         }
         #endregion
     }

@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\User\" />
-    <Folder Include="Areas\Admin\Views\Shared\Component\Adminheader\" />
     <Folder Include="Models\" />
     <Folder Include="wwwroot\Admin\" />
   </ItemGroup>
