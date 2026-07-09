@@ -51,3 +51,4 @@ wwwroot/Images/Products/
 appsettings.Development.json
 appsettings.Production.json
 *.local.json
+
