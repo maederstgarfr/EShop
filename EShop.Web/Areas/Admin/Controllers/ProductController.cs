@@ -25,7 +25,7 @@ namespace EShop.Web.Areas.Admin.Controllers
         public async Task<IActionResult> FilterProducts(FilterProductDto filter)
         {
             var model = await _productService.FilterProduct(filter);
-            ViewData["Categories"] = await _productService.GetAllProductCategories();
+            ViewData["Categories"] = await _productService.GetAllActiveCategories();
             return View(model);
         }
         [HttpGet("Product-Detail-{productId}")]
@@ -38,7 +38,7 @@ namespace EShop.Web.Areas.Admin.Controllers
         [HttpGet("Create-Product")]
         public async Task<IActionResult> CreateProduct()
         {
-            ViewData["Categories"] = await _productService.GetAllProductCategories();
+            // ViewData["Categories"] = await _productService.GetAllCategoriesForEdit();
             ViewData["Brand"] = await _productService.GetAllBrands();
             return View();
         }
@@ -46,7 +46,7 @@ namespace EShop.Web.Areas.Admin.Controllers
         [HttpPost("Create-Product"),ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProduct(CreateProductDto dto)
         {
-            ViewData["Categories"] = await _productService.GetAllProductCategories();
+            // ViewData["Categories"] = await _productService.GetAllProductCategories();
             ViewData["Brand"] = await _productService.GetAllBrands();
 
             if (!dto.MainImage.IsImage())
@@ -98,7 +98,7 @@ namespace EShop.Web.Areas.Admin.Controllers
         [HttpGet("edit_product")]
         public async Task<IActionResult> EditProduct(long productId)
         {
-            ViewData["Categories"] = await _productService.GetAllProductCategories();
+            // ViewData["Categories"] = await _productService.GetAllProductCategories();
             ViewData["Brand"] = await _productService.GetAllBrands();
 
             var model = await _productService.GetEditProduct(productId);
@@ -107,7 +107,7 @@ namespace EShop.Web.Areas.Admin.Controllers
         [HttpPost("edit_product")]
         public async Task<IActionResult> EditProduct(EditProductDto dto)
         {
-            ViewData["Categories"] = await _productService.GetAllProductCategories();
+            // ViewData["Categories"] = await _productService.GetAllProductCategories();
             ViewData["Brand"] = await _productService.GetAllBrands();
 
 
@@ -177,7 +177,7 @@ namespace EShop.Web.Areas.Admin.Controllers
         [HttpPost("create-category")]
         public async Task<IActionResult> CreateCategory(CreateCategoryDto dto)
         {
-            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+            ViewData["ParentCategories"] = await _productService.GetAllActiveCategories();
 
             if (!ModelState.IsValid) return View(dto);
 
@@ -417,75 +417,6 @@ namespace EShop.Web.Areas.Admin.Controllers
         }
         #endregion
 
-        #region Brand
-        [HttpGet("product-brand")]
-        public async Task<IActionResult> FilterBrand(FilterBrandDto filter)
-        {
-            var model = _productService.FilterBrand(filter);
-            return View(model);
-        }
-        [HttpGet("create-brand")]
-        public IActionResult CreateBrand()
-        {
-            return View();
-        }
-        [HttpPost("create-brand")]
-        public async Task<IActionResult> CreateBrand(CreatBrandDto dto)
-        {
-
-            if (!ModelState.IsValid) return View(dto);
-
-            var res = await _productService.CreateBrand(dto);
-            if (res)
-            {
-                TempData[SuccessMessage] = SuccessText;
-                return RedirectToAction("FilterBrand");
-
-            }
-            TempData[ErrorMessage] = "Url وارد شده تکراری میباشد";
-            return View(dto);
-        }
-
-        [HttpGet("edit-brand")]
-        public async Task<IActionResult> EditBrand(long brandId)
-        {
-            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
-            var model = await _productService.GetEditBrand(brandId);
-            return View(model);
-        }
-        [HttpPost("edit-brand")]
-        public async Task<IActionResult> EditBrand(EditBrandDto dto)
-        {
-            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
-
-            if (!ModelState.IsValid) return View(dto);
-
-            var res = await _productService.EditBrand(dto);
-            if (res)
-            {
-                TempData[SuccessMessage] = SuccessText;
-                return RedirectToAction("FilterBrand");
-
-            }
-            TempData[ErrorMessage] = "Url وارد شده تکراری میباشد";
-            return View(dto);
-        }
-
-
-        [Route("delete-Brand")]
-        public async Task<IActionResult> DeleteBrand(long BrandId)
-        {
-
-            var res = await _productService.DeleteBrand(BrandId);
-            if (res)
-            {
-                TempData[ErrorMessage] = DeleteText;
-                return RedirectToAction("FilterBrand");
-            }
-            TempData[ErrorMessage] = "محصولی شامل این برند میشود وامکان حذف برند وجود ندارد";
-            return RedirectToAction("FilterBrand");
-        }
-        #endregion
     }
 
 

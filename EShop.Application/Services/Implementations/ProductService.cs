@@ -909,7 +909,6 @@ namespace EShop.Application.Services.Implementations
         {
             throw new NotImplementedException();
         }
-
         public async Task<List<ProductCategory>> GetAllCategories(long? parentId)
         {
             return await _categoryRepository.GetQuery().Where(c => c.ParentId == parentId || (parentId == null && c.ParentId == null)).OrderBy(c => c.Order).ToListAsync();
@@ -918,13 +917,9 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<List<ProductCategory>> GetAllCategoriesForEdit(long? parentId, long thisCategoryId)
         {
-            return await _categoryRepository.GetQuery().Where(c=> c.Id== thisCategoryId && c => c.ParentId == parentId || (parentId == null && c.ParentId == null))
-                .OrderBy(c => c.Order)
-                .ToListAsync();
+            return await _categoryRepository.GetQuery().Where(c=> c.Id== thisCategoryId && c.ParentId == parentId || (parentId == null && c.ParentId == null)).OrderBy(c => c.Order).ToListAsync();
 
         }
-
-
         #endregion
 
 
