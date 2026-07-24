@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace EShop.Data.DTOs.ProductCategoryDto
 {
@@ -14,5 +15,6 @@ namespace EShop.Data.DTOs.ProductCategoryDto
         public string Url { get; set; }
         public bool IsActive { get; set; }
         public int Order { get; set; }
+        public IFormFile? MainImage { get; set; }
     }
 }

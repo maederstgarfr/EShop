@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EShop.Data.Repository
 {
-    public class GenericRepository<TEntitiy> : IGenerecRepository<TEntitiy> where TEntitiy : BaseEntitiy
+    public class GenericRepository<TEntitiy> : IGenericRepository<TEntitiy> where TEntitiy : BaseEntitiy
     {
         private readonly ApplicationDbContext _dbcontext;
         private readonly DbSet<TEntitiy> _dbSet;
@@ -51,9 +51,18 @@ namespace EShop.Data.Repository
             EditEntity(entity);
         }
 
-        public void DeletePermanent(TEntitiy entity)
+        public Task DeletePermanent(TEntitiy entity)
         {
             _dbSet.Remove(entity);
+            return Task.CompletedTask;
+        }
+
+        public void DeletePermanentEntities(List<TEntitiy> entities)
+        {
+            foreach (var entity in entities)
+            {
+                _dbSet.Remove(entity);
+            }
         }
 
         public async ValueTask DisposeAsync()
@@ -89,6 +98,6 @@ namespace EShop.Data.Repository
 
         }
 
-       
+    
     }
 }

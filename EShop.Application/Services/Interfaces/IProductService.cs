@@ -23,7 +23,9 @@ namespace EShop.Application.Services.Interfaces
         #endregion
 
         #region Categories
-        Task<List<ProductCategory>> GetAllProductCategories();
+        Task<List<ProductCategory>> GetAllActiveCategories();
+        Task<List<ProductCategory>> GetAllCategories(long? parentId);
+        Task<List<ProductCategory>> GetAllCategoriesForEdit(long? parentId, long thisCategoryId);
         Task<bool> AddProductSelectedCategories(List<long> SelectedCategories, long productId);
         Task RemoveProductSelectedCategories(long productId);
         Task<FilterCategoryDto> FilterCategory(FilterCategoryDto dto);
@@ -69,6 +71,7 @@ namespace EShop.Application.Services.Interfaces
         Task<bool> EditBrand(EditBrandDto dto);
         Task<EditBrandDto> GetEditBrand(long brandId);
         Task<bool> DeleteBrand(long brandId);
+        
 
         #endregion
     }

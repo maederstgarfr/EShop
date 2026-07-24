@@ -1,6 +1,87 @@
 ﻿@model EShop.Data.DTOs.ProductDTO.FilterProductDto
 @using EShop.Data.Entities.ProductEntities
-@{ 
+@{
     ViewData["Title"] = "مدیریت محصولات";
     var categories = (List<ProductCategory>)ViewData["Categories"];
 }
+
+<form asp-area="Admin" asp-controller="Product" asp-action="FilterProducts" method="get" id="filter-form">
+    <div class="container-fluid py-4">
+
+        <div class="card shadow-sm border-0 rounded-4">
+
+            <div class="card-header bg-white border-0 pt-4 pb-3">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5 class="fw-bold mb-0">
+                        فیلتر محصولات
+                    </h5>
+
+                    <div>
+
+                        <a href="/Admin/Product/Create"
+                           class="btn btn-success rounded-pill px-4">
+
+                            <i class="fa fa-plus me-1"></i>
+                            افزودن محصول
+                        </a>
+
+                        <button class="btn btn-danger rounded-pill px-4 ms-2">
+
+                            <i class="fa fa-filter me-1"></i>
+                            فیلتر محصولات
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="filter-placeholder">
+
+                </div>
+
+            </div>
+
+            <div class="card-footer bg-white border-0">
+
+                <nav>
+
+                    <ul class="pagination justify-content-end mb-0">
+
+                        <li class="page-item disabled">
+                            <a class="page-link">قبلی</a>
+                        </li>
+
+                        <li class="page-item active">
+                            <a class="page-link">1</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link">2</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link">3</a>
+                        </li>
+
+                        <li class="page-item">
+                            <a class="page-link">بعدی</a>
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>

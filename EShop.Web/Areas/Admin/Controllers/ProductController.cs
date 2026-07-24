@@ -161,16 +161,17 @@ namespace EShop.Web.Areas.Admin.Controllers
         #endregion
 
         #region Category
-        [HttpGet("product-category")]
+        [HttpGet("filte-category")]
         public async Task<IActionResult> FilterCategories(FilterCategoryDto filter)
         {
+            ViewData["ParentCategories"] = await _productService.GetAllActiveCategories();
             var model = _productService.FilterCategory(filter);
             return View(model);
         }
         [HttpGet("create-category")]
         public async Task<IActionResult> CreateCategory()
         {
-            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+            ViewData["ParentCategories"] = await _productService.GetAllActiveCategories();
             return View();
         }
         [HttpPost("create-category")]
@@ -194,14 +195,14 @@ namespace EShop.Web.Areas.Admin.Controllers
         [HttpGet("edit-category")]
         public async Task<IActionResult> EditCategory(long categoryId)
         {
-            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+            ViewData["ParentCategories"] = await _productService.GetAllActiveCategories();
             var model = await _productService.GetEditCategory(categoryId);
             return View(model);
         }
         [HttpPost("edit-category")]
         public async Task<IActionResult> EditCategory(EditCategoryDto dto)
         {
-            ViewData["ParentCategories"] = await _productService.GetAllProductCategories();
+            ViewData["ParentCategories"] = await _productService.GetAllActiveCategories();
 
             if (!ModelState.IsValid) return View(dto);
 

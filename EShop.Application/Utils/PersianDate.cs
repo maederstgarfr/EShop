@@ -42,6 +42,7 @@ namespace EShop.Application.Utils
             DayOfWeek intDayOfWeek = PC.GetDayOfWeek(dt);
             string srtMonthName = "";
             string srtDayName = "";
+            return "";
         }
 
 

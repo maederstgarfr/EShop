@@ -7,9 +7,9 @@ namespace EShop.Application.Utils
     {
         public static string FixText(this string text) => text?.Trim().Replace(" ", " ");
         public static string FixEmail(this string email) => email?.Trim().Replace(" ", " ");
-        public static string RemoveHtmlTagsExceptionBreak(string text) => Regex.Replace(text, @"<(?!br[\x20/>])[^<>]+>");
+        public static string RemoveHtmlTagsExceptionBreak(string text) => Regex.Replace(text, @"<(?!br[\x20/>])[^<>]+>","");
         public static string ReplaceNewLineTextArea(string text) => text?.Replace(Environment.NewLine, "<br />");
-        public static string ReplaceBrToNewLine(string text) => text?.Replace( "<br />",Environment.NewLine);
+        public static string ReplaceBrToNewLine(string text) => text?.Replace("<br />", Environment.NewLine);
 
         public static string FixTextForUrl(this string text)
         {
@@ -33,9 +33,9 @@ namespace EShop.Application.Utils
                 return string.Empty;
             }
 
-            return text.Replace( Environment.NewLine,"<br />");
+            return text.Replace(Environment.NewLine, "<br />");
         }
-        
+
         public static string FixdEmail(this string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -43,7 +43,7 @@ namespace EShop.Application.Utils
                 return string.Empty;
             }
 
-            return text.Replace( Environment.NewLine,"<br />");
+            return text.Replace(Environment.NewLine, "<br />");
         }
         public static string[] SplitTags(this string tags)
         {
@@ -59,7 +59,7 @@ namespace EShop.Application.Utils
         }
         public static string LongString150(this string text, int lengh = 150)
         {
-            if (text.Length>= lengh)
+            if (text.Length >= lengh)
             {
                 return text.Substring(0, lengh) + "...";
             }
@@ -68,7 +68,7 @@ namespace EShop.Application.Utils
         }
         public static string LongString50(this string text, int lengh = 50)
         {
-            if (text.Length>= lengh)
+            if (text.Length >= lengh)
             {
                 return text.Substring(0, lengh) + "...";
             }
@@ -77,7 +77,7 @@ namespace EShop.Application.Utils
         }
         public static string LongString40(this string text, int lengh = 40)
         {
-            if (text.Length>= lengh)
+            if (text.Length >= lengh)
             {
                 return text.Substring(0, lengh) + "...";
             }
@@ -105,6 +105,6 @@ namespace EShop.Application.Utils
         public static string ToRial(this int Price)
         {
             return Price.ToString("#, 0 ");
-
+        }
     }
 }

@@ -102,6 +102,22 @@ namespace EShop.Application.Services.Implementations
                 ParentId = dto.ParentId,
                 Url = dto.Url
             };
+
+            #region Main Image
+            var mainImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.MainImage.FileName);
+            var res = dto.MainImage.AddImageToServer(mainImageName, PathExtention.CategoryServer, 150, 150, PathExtention.CategoryThumbServer, category.MainImage);
+            if (res)
+            {
+                category.MainImage = mainImageName;
+
+            }
+            else
+            {
+                return false;
+            }
+
+            #endregion
+
             await _categoryRepository.AddEntity(category);
             await _categoryRepository.SaveAsync();
             return true;
@@ -277,6 +293,26 @@ namespace EShop.Application.Services.Implementations
             data.IsActive = dto.IsActive;
             data.ParentId = dto.ParentId;
 
+            #region Main Image
+            if (dto.MainImage != null)
+            {
+                var mainImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.MainImage.FileName);
+                var res = dto.MainImage.AddImageToServer(mainImageName, PathExtention.CategoryServer, 150, 150, PathExtention.CategoryThumbServer, data.MainImage);
+                if (res)
+                {
+                    data.MainImage = mainImageName;
+
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            
+
+            #endregion
+
             _categoryRepository.EditEntity(data);
             await _categoryRepository.SaveAsync();
             return true;
@@ -389,6 +425,11 @@ namespace EShop.Application.Services.Implementations
             if (!string.IsNullOrEmpty(filter.Title))
             {
                 query = query.Where(c => EF.Functions.Like(c.Title, $"{ filter.Title}"));
+            }
+
+            if (filter.ParentId>0)
+            {
+                query = query.Where(c=>c.ParentId== filter.ParentId);
             }
             #endregion
 
@@ -546,7 +587,7 @@ namespace EShop.Application.Services.Implementations
             _selectedCategoryRepository.DeletePermanentEntities(selectedCategory);
             await _selectedCategoryRepository.SaveAsync();
         }
-        public async Task<List<ProductCategory>> GetAllProductCategories()
+        public async Task<List<ProductCategory>> GetAllActiveCategories()
         {
             return await _categoryRepository.GetQuery().Include(d => d.subCategories).Where(d => d.IsActive).ToListAsync();
         }
@@ -869,7 +910,21 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        
+        public async Task<List<ProductCategory>> GetAllCategories(long? parentId)
+        {
+            return await _categoryRepository.GetQuery().Where(c => c.ParentId == parentId || (parentId == null && c.ParentId == null)).OrderBy(c => c.Order).ToListAsync();
+
+        }
+
+        public async Task<List<ProductCategory>> GetAllCategoriesForEdit(long? parentId, long thisCategoryId)
+        {
+            return await _categoryRepository.GetQuery().Where(c=> c.Id== thisCategoryId && c => c.ParentId == parentId || (parentId == null && c.ParentId == null))
+                .OrderBy(c => c.Order)
+                .ToListAsync();
+
+        }
+
+
         #endregion
 
 
