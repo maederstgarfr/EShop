@@ -9,8 +9,12 @@ namespace EShop.Data.DTOs.ProductCategoryDto
 {
     public class TreeViewCategoriesDto
     {
-        public List<ProductCategory> productCategories { get; set; }
-        public int level { get; set; }
-        public long? thisCategoryId { get; set; }
+        // create and edit cartegories
+        public List<ProductCategory> ProductCategories { get; set; }
+        public int Level { get; set; }
+        public long? ThisCategoryId { get; set; }
+
+        //select product categories   
+        public List<long>? SelectedCategoriesIds { get; set; }
     }
 }
