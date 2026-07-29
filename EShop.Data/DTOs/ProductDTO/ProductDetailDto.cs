@@ -15,6 +15,7 @@ namespace EShop.Data.DTOs.ProductDTO
         public DateTime LastUpdateDate { get; set; }
         public bool IsDeleted { get; set; }
         public long BrandId { get; set; }
+        public int BasePrice { get; set; }
         public string Title { get; set; }
         public bool IsAvailable { get; set; }
         public string MainImageName { get; set; }

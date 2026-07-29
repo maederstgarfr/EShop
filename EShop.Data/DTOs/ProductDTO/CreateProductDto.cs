@@ -7,6 +7,7 @@ namespace EShop.Data.DTOs.ProductDTO
     public class CreateProductDto 
     {
         public string Title { get; set; }
+        public string BasePrice { get; set; }
         public bool IsAvailabe { get; set; }
         public IFormFile MainImage { get; set; }
         public string ShortDescription { get; set; }
