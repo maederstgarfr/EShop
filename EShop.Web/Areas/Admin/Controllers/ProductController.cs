@@ -323,20 +323,36 @@ namespace EShop.Web.Areas.Admin.Controllers
 
         #region Variant
         [HttpGet("create-variant")]
-        public IActionResult CreateVariant(long productId)
+        public async Task<IActionResult> CreateVariant(long productId)
         {
             TempData["ProductId"] = productId;
+            var colors = await _productService.GetAllProductColors();
+            TempData["ColorId"] = colors;
+
+            if (!colors.Any())
+            {
+                TempData[InfoMessage] = "پیش از ثبت موجودری حداقل باید یک رنگ ایجاد کنید";
+                return View();
+            }
             return View();
         }
 
         [HttpPost("create-variant"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateVariant(CreateProductVariantDto dto)
+        public async Task<IActionResult> CreateVariant(List<CreateVariantItemDto> Variants, long productId)
         {
-            if (!ModelState.IsValid) return View(dto);
+            var colors = await _productService.GetAllProductColors();
+            TempData["ColorId"] = colors;
 
-            await _productService.CreateProductVariant(dto);
+            if (!colors.Any())
+            {
+                TempData[InfoMessage] = "پیش از ثبت موجودری حداقل باید یک رنگ ایجاد کنید";
+                return RedirectToAction("ProductDetail", new { productId = productId });
+            }
+            if (!ModelState.IsValid) return View();
+
+            await _productService.CreateProductVariant(productId);
             TempData[SuccessMessage] = SuccessText;
-            return RedirectToAction("ProductDetail", new { productId = dto.ProductId });
+            return RedirectToAction("ProductDetail", new { productId = productId });
         }
 
         [HttpGet("Edit-variant")]

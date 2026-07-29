@@ -755,18 +755,26 @@ namespace EShop.Application.Services.Implementations
         #endregion
 
         #region Variant
-        public async Task CreateProductVariant(CreateProductVariantDto dto)
+        public async Task CreateProductVariant(List<CreateVariantItemDto> variants, long productId)
         {
-            var variant = new ProductVariant
+            var product = await _productRepository.GetEntityById(productId);
+            var output = new List<ProductVariant>();
+            foreach(var item in variants)
             {
-                ProductId = dto.ProductId,
-                Price = dto.Price,
-                ColorId = dto.ColorId,
-                StockCount = dto.StockCount,
-                Product = await _productRepository.GetEntityById(dto.ProductId),
-                ProductColor= await _colorRepository.GetEntityById(dto.ColorId)
-            };
-            await _variantRepository.AddEntity(variant);
+                var color = await _colorRepository.GetEntityById(item.ColorId);
+                var variant= new ProductVariant
+                {
+                    ProductId = productId,
+                    Price = int.Parse(item.Price.Replace(",","")),
+                    ColorId = item.ColorId,
+                    StockCount = item.StockCount,
+                    Product = await _productRepository.GetEntityById(productId),
+                    ProductColor = await _colorRepository.GetEntityById(item.ColorId)
+                };
+                output.Add(variant);
+            }
+            
+            await _variantRepository.AddRangeEntities(output);
             await _variantRepository.SaveAsync();
         }
 

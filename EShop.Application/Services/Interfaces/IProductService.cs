@@ -44,7 +44,7 @@ namespace EShop.Application.Services.Interfaces
         #endregion
 
         #region ProductVariant
-        Task CreateProductVariant(CreateVariantItemDto dto);
+        Task CreateProductVariant(List<CreateVariantItemDto> variants, long productId);
         Task<EditProductVariantDto> GetEditProductVariant(long variantId);
         Task EditProductVariant(EditProductVariantDto dto);
         Task<bool> DeleteProductVariant(long variantId);
