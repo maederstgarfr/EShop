@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using EShop.Data.Entities.Account;
+using EShop.Data.Entities.OrderEntities;
 using EShop.Data.Entities.ProductEntities;
 using Microsoft.EntityFrameworkCore;
 namespace EShop.Data.Context
@@ -64,13 +65,19 @@ namespace EShop.Data.Context
                .HasQueryFilter(u => !u.IsDeleted);
             modelBuilder.Entity<ProductGallery>()
                .HasQueryFilter(u => !u.IsDeleted);
-
+            modelBuilder.Entity<Order>()
+                .HasQueryFilter(u => !u.IsDeleted);
+            modelBuilder.Entity<OrderDetail>()
+                .HasQueryFilter(u => !u.IsDeleted);
 
         }
 
         #endregion
 
-      
+        #region Order
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        #endregion
 
     }
 }
