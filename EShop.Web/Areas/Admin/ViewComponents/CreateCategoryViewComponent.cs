@@ -21,8 +21,8 @@ namespace EShop.Web.Areas.Admin.ViewComponents
             var category = await _productService.GetAllCategories(parentId);
             var model = new TreeViewCategoriesDto
             {
-                level = level,
-                productCategories=category,
+                Level = level,
+                ProductCategories=category
 
             };
             return View("CreateCategory", model);
