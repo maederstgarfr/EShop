@@ -35,7 +35,7 @@ namespace EShop.Application.Services.Implementations
         #endregion
 
         #region Product
-        public ProductService(IGenericRepository<Product> productRepository, IGenericRepository<ProductCategory> categoryRepository, IGenericRepository<ProductVariant> variantRepository, IGenericRepository<ProductComment> commentRepository, IGenericRepository<ProductColor> colorRepository, IGenericRepository<Brand> brandRepository,IGenericRepository<ProductSelectedBrand> selectedBrandRepository, IGenericRepository<ProductSelectedCategory> selectedCategoryRepository, IGenericRepository<ProductGallery> galleryRepository, IGenericRepository<ProductFeature> featureRepository)
+        public ProductService(IGenericRepository<Product> productRepository, IGenericRepository<ProductCategory> categoryRepository, IGenericRepository<ProductVariant> variantRepository, IGenericRepository<ProductComment> commentRepository, IGenericRepository<ProductColor> colorRepository, IGenericRepository<Brand> brandRepository,IGenericRepository<ProductSelectedBrand> selectedBrandRepository, IGenericRepository<ProductSelectedCategory> selectedCategoryRepository, IGenericRepository<ProductGallery> galleryRepository, IGenericRepository<ProductFeature> featureRepository, IGenericRepository<OrderDetail> orderDetail)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -47,7 +47,7 @@ namespace EShop.Application.Services.Implementations
             _selectedCategoryRepository = selectedCategoryRepository;
             _featureRepository = featureRepository;
             _galleryRepository = galleryRepository;
-            _orderDetail = _orderDetail;
+            _orderDetail = orderDetail;
         }
 
         public async ValueTask DisposeAsync()
@@ -125,12 +125,14 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<CreateProductResult> CreateProduct(CreateProductDto dto)
         {
+            var convertedPrice = int.Parse(dto.BasePrice.Replace(",", ""));
             var product = new Product
             {
                 Title = dto.Title,
                 Description=dto.Description,
                 ShortDescription=dto.ShortDescription,
                 IsAvailable=dto.IsAvailabe,
+                BasePrice = convertedPrice
             };
             
             #region Main Image
@@ -196,7 +198,7 @@ namespace EShop.Application.Services.Implementations
             if (dto.ProductGalleries != null && dto.ProductGalleries.Any())
             {
                 var galleryOrder = 2;
-                foreach (var gallery in dto.ProductGalleries)
+                foreach (var item in dto.ProductGalleries)
                 {
                     var galleryItem = new ProductGallery
                     {
@@ -204,8 +206,8 @@ namespace EShop.Application.Services.Implementations
                         Order=galleryOrder
                     };
                    //image
-                    var galleyImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.MainImage.FileName);
-                    dto.MainImage.AddImageToServer(mainImageName, PathExtention.ProductGalleryServer, 150, 150, PathExtention.ProductGalleryThumbServer);
+                    var galleyImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(item.FileName);
+                    item.AddImageToServer(mainImageName, PathExtention.ProductGalleryServer, 150, 150, PathExtention.ProductGalleryThumbServer);
                     galleryItem.ImageName = galleyImageName;
 
                     await _galleryRepository.AddEntity(galleryItem);
@@ -234,6 +236,7 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<bool> DeleteProduct(long ProductId)
         {
+            var product = await _productRepository.GetEntityById(ProductId);
             #region order
             var productOrdered = await _orderDetail.GetQuery().Include(d=>d.ProductVariant).AllAsync(d => d.ProductVariant.ProductId == ProductId);
             if (productOrdered) return false;
@@ -265,12 +268,15 @@ namespace EShop.Application.Services.Implementations
 
             #endregion
 
+            #region main Image
+            product.MainImageName.DeleteImage(PathExtention.ProductImage, PathExtention.ProductImageThumb);
+            #endregion
             #region Comments
             var comments = await _commentRepository.GetQuery().Where(d => d.ProductId == ProductId).ToListAsync();
             _commentRepository.DeletePermanentEntities(comments);
             _commentRepository.SaveAsync();
             #endregion
-            var product = await _productRepository.GetEntityById(ProductId);
+            
             _productRepository.DeleteEntity(product);
             await _productRepository.SaveAsync();
             return true;
@@ -571,6 +577,7 @@ namespace EShop.Application.Services.Implementations
                 Description = data.Description,
                 MainImageName = data.MainImageName,
                 ShortDescription=data.ShortDescription,
+                BasePrice=data.BasePrice,
                 ProductComments = await _commentRepository.GetQuery().Where(d => d.ProductId == productId).ToListAsync(),
                 ProductVariants=await _variantRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
                 ProductSelectedBrand = await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(d => d.ProductId == productId),        
@@ -579,6 +586,13 @@ namespace EShop.Application.Services.Implementations
                 ProductFeatures = await _featureRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
                 
             };
+            var selectedBrand =
+                await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(b => b.ProductId == productId);
+            if(selectedBrand != null)
+            {
+                model.ProductSelectedBrand = selectedBrand.Brand;
+            }
+            return model;
         }
 
         public async Task RemoveProductSelectedCategories(long productId)
@@ -905,9 +919,26 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<EditProductDto> GetEditProduct(long productId)
+        public async Task<EditProductDto> GetEditProduct(long productId)
         {
-            throw new NotImplementedException();
+            var brand = await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(d => d.ProductId == productId);
+            var data = await _productRepository.GetEntityById(productId);
+
+            var model = new EditProductDto
+            {
+                ProductId = productId,
+                Description = data.Description,
+                IsAvailabe = data.IsAvailable,
+                Title = data.Title,
+                ShortDescription = data.ShortDescription,
+                Categories = await _selectedCategoryRepository.GetQuery().Where(d => d.ProductId == productId).Select(d => d.CategoryId).ToListAsync()
+
+            };
+            if (brand != null)
+            {
+                model.BrandId = brand.BrandId;
+            }
+            return model;
         }
         public async Task<List<ProductCategory>> GetAllCategories(long? parentId)
         {
