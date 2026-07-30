@@ -24,6 +24,7 @@ namespace EShop.Web.Controllers
         public async Task<IActionResult> FilterProducts(FilterProductDto filter)
         {
             var model = await _productService.FilterProduct(filter);
+            ViewData["Colors"] = await _productService.GetAllProductColors();
             return View(model);
         }
         #endregion
@@ -33,7 +34,7 @@ namespace EShop.Web.Controllers
         public async Task<IActionResult> ProductDetail(long productId)
         {
             var model = await _productService.ProductDetail(productId);
-            ViewData["Colors"] = await _productService.GetAllProductColors();
+            ViewData["SimilarProducts"] = await _productService.GetSimilarProducts(productId);
             return View(model);
         }
         #endregion
