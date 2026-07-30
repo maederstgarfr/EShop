@@ -14,6 +14,7 @@ namespace EShop.Application.Services.Interfaces
         #region Product
         Task<FilterProductDto> FilterProduct(FilterProductDto dto);
         Task<List<ProductColor>> GetAllProductColors();
+        Task<List<Product>> GetSimilarProducts(long productId);
         Task<ProductDetailDto> ProductDetail(long productId);
         Task<CreateProductResult> CreateProduct(CreateProductDto dto);
         Task<EditProductDto> EditProduct(long productId);

@@ -959,6 +959,16 @@ namespace EShop.Application.Services.Implementations
             return await _categoryRepository.GetQuery().Where(c=> c.Id== thisCategoryId && c.ParentId == parentId || (parentId == null && c.ParentId == null)).OrderBy(c => c.Order).ToListAsync();
 
         }
+
+        public async Task<List<Product>> GetSimilarProducts(long productId)
+        {
+            var product = await _productRepository.GetQuery().Include(d => d.SelectedCategories).FirstAsync(d => d.Id == productId);
+
+            return await _productRepository.GetQuery()
+                .Where(p => p.SelectedCategories.Any(c => c.CategoryId == product.SelectedCategories.First().CategoryId)&& p.Id != productId)
+                .OrderByDescending(p=>p.CreateDate).Take(10).ToListAsync();
+
+        }
         #endregion
 
 
