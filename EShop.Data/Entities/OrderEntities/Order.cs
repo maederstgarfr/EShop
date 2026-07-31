@@ -16,10 +16,12 @@ namespace EShop.Data.Entities.OrderEntities
         public string? Address { get; set; }
         public string? PostCode { get; set; }
         public int? TotalPrice { get; set; }
+        public string? DestinationCity { get; set; }
         public string? Description { get; set; }
         public string? TraceCode { get; set; }
         public string? PaymentNumber { get; set; }
         public OrderState OrderState { get; set; }
+        public DateTime? paymentDate { get; set; }
         public User User { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; }
 
