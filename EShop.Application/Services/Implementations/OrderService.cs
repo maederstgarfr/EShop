@@ -153,9 +153,26 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<OrderDetailDto> OrderDetail(long orderId)
+        public async Task<OrderDetailDto> OrderDetail(long orderId)
         {
-            throw new NotImplementedException();
+            var data = await _orderRepository.GetEntityById(orderId);
+            return new OrderDetailDto
+            {
+                Id = data.Id,
+                CreateDate = data.CreateDate,
+                LastUpdateDate = data.LastUpdateDate,
+                UserId = data.UserId,
+                UserName = data.UserName,
+                Address = data.Address,
+                PostCode = data.PostCode,
+                TotalPrice = data.TotalPrice,
+                Description = data.Description,
+                TraceCode = data.PostCode,
+                PaymentNumber = data.PaymentNumber,
+                OrderState = data.OrderState,
+                User = await _userRepository.GetEntityById(data.UserId),
+                OrderDetails = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == orderId).ToListAsync()
+            };
         }
 
         public Task PayOrderPrice(long invoiceId)
