@@ -11,5 +11,6 @@ namespace EShop.Data.DTOs.OrderDto
     {
         public long UserId { get; set; }
         public long ProductVariantId { get; set; }
+        public int Count { get; set; }
     }
 }
