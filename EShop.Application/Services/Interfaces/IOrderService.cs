@@ -9,7 +9,7 @@ namespace EShop.Application.Services.Interfaces
     {
         Task<OrderDetailDto> OrderDetail(long orderId);
         Task<FilterOrderDto> FilterOrders(FilterOrderDto filter);
-        Task<Order> GetUserOpenOrder(long userId);
+        Task<Order?> GetUserOpenOrder(long userId);
         Task<ProcessOrderDto> GetProcessOrder(long orderId);
         Task<long> AddOrderForUser(long userId);
         Task ProcessOrder(ProcessOrderDto dto);

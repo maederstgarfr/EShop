@@ -40,14 +40,52 @@ namespace EShop.Application.Services.Implementations
             await _variantrRepository.DisposeAsync();
         }
         #endregion
-        public Task<long> AddOrderForUser(long userId)
+        public async Task<long> AddOrderForUser(long userId)
         {
-            throw new NotImplementedException();
+            if (await _orderRepository.GetQuery().AnyAsync(o => o.UserId == userId && o.OrderState == OrderState.Submitted))
+                return 0;
+            var user = await _userRepository.GetEntityById(userId);
+            var order = new Order
+            {
+                UserId=userId,
+                OrderState=OrderState.Submitted,
+                TotalPrice=0
+            };
+            await _orderRepository.AddEntity(order);
+            await _orderRepository.SaveAsync();
+            return order.Id;
         }
 
-        public Task AddProductToOrder(SubmitOrderDto dto)
+        public async Task AddProductToOrder(SubmitOrderDto dto)
         {
-            throw new NotImplementedException();
+            var order = await _orderRepository.GetQuery().AnyAsync(o => o.UserId == dto.UserId && o.OrderState == OrderState.Submitted);
+            if (!order) await AddOrderForUser(dto.UserId);
+
+            var newOrder = await _orderRepository.GetQuery().FirstAsync(o => o.UserId == dto.UserId);
+
+            if (await _orderDetailRepository.GetQuery()
+                .AnyAsync(d => d.ProductVariantId == dto.ProductVariantId && d.OrderId == newOrder.Id)){
+                var detail = await _orderDetailRepository.GetQuery()
+                    .FirstAsync(d => d.ProductVariantId == dto.ProductVariantId && d.OrderId == newOrder.Id);
+                detail.Count = dto.Count;
+                _orderDetailRepository.EditEntity(detail);
+                await _orderDetailRepository.SaveAsync();
+            }
+             
+            var variant = await _variantrRepository.GetEntityById(dto.ProductVariantId);
+            var product = await _productRepository.GetEntityById(variant.ProductId);
+            var orderDetail = new OrderDetail
+            {
+                Count = dto.Count,
+                OrderId = newOrder.Id,
+                Price = variant.Price + product.BasePrice,
+                ProductVariantId = dto.ProductVariantId
+            };
+            await _orderDetailRepository.AddEntity(orderDetail);
+            await _orderRepository.SaveAsync();
+
+
+
         }
 
         public Task ChangeOrderDetailCount(long orderDetailId, int count)
@@ -143,14 +181,20 @@ namespace EShop.Application.Services.Implementations
             return filter.SetData(allEntities).SetPaging(pager);
         }
 
-        public Task<ProcessOrderDto> GetProcessOrder(long orderId)
+        public async Task<ProcessOrderDto> GetProcessOrder(long orderId)
         {
-            throw new NotImplementedException();
+            var data = await _orderRepository.GetEntityById(orderId);
+            return new ProcessOrderDto
+            {
+                OrderState = data.OrderState,
+                TraceCode = data.TraceCode,
+                OrderId = data.Id
+            };
         }
 
-        public Task<Order> GetUserOpenOrder(long userId)
+        public async Task<Order?> GetUserOpenOrder(long userId)
         {
-            throw new NotImplementedException();
+            return await _orderRepository.GetQuery().FirstOrDefaultAsync(o => o.UserId == userId && o.OrderState == OrderState.Submitted);
         }
 
         public async Task<OrderDetailDto> OrderDetail(long orderId)
@@ -180,9 +224,14 @@ namespace EShop.Application.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public Task ProcessOrder(ProcessOrderDto dto)
+        public async Task ProcessOrder(ProcessOrderDto dto)
         {
-            throw new NotImplementedException();
+            var data = await _orderRepository.GetEntityById(dto.OrderId);
+            data.TraceCode = dto.TraceCode;
+            data.OrderState = dto.OrderState;
+
+            _orderRepository.EditEntity(data);
+            await _orderRepository.SaveAsync();
         }
 
         public Task RemoveOrderDetail(long orderDetailId)
