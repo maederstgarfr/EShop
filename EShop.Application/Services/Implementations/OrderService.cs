@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Eshop.Data.DTOs.PaymentDto;
 using EShop.Application.Services.Interfaces;
 using EShop.Data.DTOs.OrderDto;
 using EShop.Data.DTOs.Paging;
@@ -22,13 +23,15 @@ namespace EShop.Application.Services.Implementations
         private readonly IGenericRepository<OrderDetail> _orderDetailRepository;
         private readonly IGenericRepository<Product> _productRepository;
         private readonly IGenericRepository<ProductVariant> _variantrRepository;
-        public OrderService(IGenericRepository<User> userRepository, IGenericRepository<Order> orderRepository, IGenericRepository<OrderDetail> orderDetailRepository, IGenericRepository<Product> productRepository, IGenericRepository<ProductVariant> variantrRepository)
+        private readonly IGenericRepository<PaymentRecord> _recordRepository;
+        public OrderService(IGenericRepository<User> userRepository, IGenericRepository<Order> orderRepository, IGenericRepository<OrderDetail> orderDetailRepository, IGenericRepository<Product> productRepository, IGenericRepository<ProductVariant> variantrRepository, IGenericRepository<PaymentRecord> recordRepository)
         {
             _userRepository = userRepository;
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository;
             _productRepository = productRepository;
             _variantrRepository = variantrRepository;
+            _recordRepository = recordRepository;
 
         }
         public async ValueTask DisposeAsync()
@@ -38,6 +41,7 @@ namespace EShop.Application.Services.Implementations
             await _orderDetailRepository.DisposeAsync();
             await _productRepository.DisposeAsync();
             await _variantrRepository.DisposeAsync();
+            await _orderRepository.DisposeAsync();
         }
         #endregion
         public async Task<long> AddOrderForUser(long userId)
@@ -152,9 +156,9 @@ namespace EShop.Application.Services.Implementations
             {
                 query = query.Where(p => EF.Functions.Like(p.TraceCode, $"{filter.TraceCode }"));
             }
-            if (!string.IsNullOrEmpty(filter.PaymentNumber))
+            if (filter.PaymentRecordId is > 0)
             {
-                query = query.Where(p => EF.Functions.Like(p.PaymentNumber, $"{filter.PaymentNumber }"));
+                query = query.Where(o => o.PaymentRecordId==filter.PaymentRecordId);
             }
             if (!string.IsNullOrEmpty(filter.DestinationCity))
             {
@@ -219,17 +223,13 @@ namespace EShop.Application.Services.Implementations
                 TotalPrice = data.TotalPrice,
                 Description = data.Description,
                 TraceCode = data.PostCode,
-                PaymentNumber = data.PaymentNumber,
+                PaymentRecordId = data.PaymentRecordId,
                 OrderState = data.OrderState,
                 User = await _userRepository.GetEntityById(data.UserId),
                 OrderDetails = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == orderId).ToListAsync()
             };
         }
 
-        public Task PayOrderPrice(long invoiceId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task ProcessOrder(ProcessOrderDto dto)
         {
@@ -246,6 +246,34 @@ namespace EShop.Application.Services.Implementations
             var data = await _orderDetailRepository.GetEntityById(orderDetailId);
             await _orderDetailRepository.DeletePermanent(data);
             await _orderDetailRepository.SaveAsync();
+        }
+
+        public async Task PayOrderPrice(PaymentVerificationResultData dto)
+        {
+
+            #region PaymentRecord
+            var record = new PaymentRecord
+            {
+                amount = dto.amount,
+                trans_id=dto.trans_id,
+                ref_id=dto.ref_id,
+                payment_time=dto.payment_time,
+                invoice_id=dto.invoice_id,
+                card_pan=dto.card_pan,
+                buyer_ip=dto.buyer_ip,
+                authority=dto.authority
+            };
+            await _recordRepository.AddEntity(record);
+            await _recordRepository.SaveAsync();
+            #endregion
+
+            var order = await _orderRepository.GetEntityById(long.Parse(dto.invoice_id));
+            order.OrderState = OrderState.Paid;
+            order.paymentDate = DateTime.Now;
+            order.PaymentRecordId = record.Id;
+
+            _orderRepository.EditEntity(order);
+            await _orderRepository.SaveAsync();
         }
     }
 }

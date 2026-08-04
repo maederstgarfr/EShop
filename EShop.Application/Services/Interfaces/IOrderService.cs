@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Eshop.Data.DTOs.PaymentDto;
 using EShop.Data.DTOs.OrderDto;
 using EShop.Data.Entities.OrderEntities;
 
@@ -16,7 +17,7 @@ namespace EShop.Application.Services.Interfaces
         Task AddProductToOrder(SubmitOrderDto dto);
         Task ChangeOrderDetailCount(long orderDetailId, int count);
         Task RemoveOrderDetail(long orderDetailId);
-        Task PayOrderPrice(long invoiceId);
+        Task PayOrderPrice(PaymentVerificationResultData dto);
         Task DeleteOrder(long orderId);
 
     }

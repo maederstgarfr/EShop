@@ -17,7 +17,7 @@ namespace EShop.Data.DTOs.OrderDto
         public string DestinationCity { get; set; }
         public string? Description { get; set; }
         public string? TraceCode { get; set; }
-        public string? PaymentNumber { get; set; }
+        public long? PaymentRecordId { get; set; }
         public FilterOrderState FilterOrderState { get; set; }
         public List<Order> Data { get; set; }
 

@@ -19,7 +19,7 @@ namespace EShop.Data.Entities.OrderEntities
         public string? DestinationCity { get; set; }
         public string? Description { get; set; }
         public string? TraceCode { get; set; }
-        public string? PaymentNumber { get; set; }
+        public long? PaymentRecordId { get; set; }
         public OrderState OrderState { get; set; }
         public DateTime? paymentDate { get; set; }
         public User User { get; set; }
