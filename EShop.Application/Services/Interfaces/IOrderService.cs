@@ -14,7 +14,7 @@ namespace EShop.Application.Services.Interfaces
         Task<ProcessOrderDto> GetProcessOrder(long orderId);
         Task<long> AddOrderForUser(long userId);
         Task ProcessOrder(ProcessOrderDto dto);
-        Task AddProductToOrder(SubmitOrderDto dto);
+        Task AddProductToOrder(SubmitOrderDetailDto dto);
         Task ChangeOrderDetailCount(long orderDetailId, int count);
         Task RemoveOrderDetail(long orderDetailId);
         Task PayOrderPrice(PaymentVerificationResultData dto);

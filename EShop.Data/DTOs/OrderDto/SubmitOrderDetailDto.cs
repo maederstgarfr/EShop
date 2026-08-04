@@ -7,7 +7,7 @@ using EShop.Data.DTOs.Paging;
 
 namespace EShop.Data.DTOs.OrderDto
 {
-    public class SubmitOrderDto : BasePaging
+    public class SubmitOrderDetailDto : BasePaging
     {
         public long UserId { get; set; }
         public long ProductVariantId { get; set; }

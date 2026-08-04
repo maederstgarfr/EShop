@@ -21,8 +21,8 @@ namespace EShop.Data.DTOs.OrderDto
         public int? TotalPrice { get; set; }
         public string? Description { get; set; }
         public string? TraceCode { get; set; }
-        public long? PaymentRecordId { get; set; }
         public OrderState OrderState { get; set; }
+        public PaymentRecord paymentRecord { get; set; }
         public User User { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
 

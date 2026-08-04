@@ -60,7 +60,7 @@ namespace EShop.Application.Services.Implementations
             return newOrder.Id;
         }
 
-        public async Task AddProductToOrder(SubmitOrderDto dto)
+        public async Task AddProductToOrder(SubmitOrderDetailDto dto)
         {
             var orderId = await AddOrderForUser(dto.UserId);
 
@@ -223,10 +223,10 @@ namespace EShop.Application.Services.Implementations
                 TotalPrice = data.TotalPrice,
                 Description = data.Description,
                 TraceCode = data.PostCode,
-                PaymentRecordId = data.PaymentRecordId,
                 OrderState = data.OrderState,
                 User = await _userRepository.GetEntityById(data.UserId),
-                OrderDetails = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == orderId).ToListAsync()
+                OrderDetails = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == orderId).ToListAsync(),
+                paymentRecord=await _recordRepository.GetQuery().FirstAsync(r=>long.Parse(r.invoice_id) ==orderId)
             };
         }
 
