@@ -25,6 +25,10 @@ namespace EShop.Data.DTOs.OrderDto
         public PaymentRecord paymentRecord { get; set; }
         public User User { get; set; }
         public List<OrderDetail> OrderDetails { get; set; }
+        public int totalCartPrice()
+        {
+            return OrderDetails.Sum(s => s.Price * s.Count);
+        }
 
     }
 }
