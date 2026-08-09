@@ -9,6 +9,7 @@ namespace EShop.Application.Services.Interfaces
     public interface IOrderService: IAsyncDisposable
     {
         Task<OrderDetailDto> OrderDetail(long orderId);
+        Task<OpenOrderDto?> UserOpenOrderDetail(long userId);
         Task<FilterOrderDto> FilterOrders(FilterOrderDto filter);
         Task<Order?> GetUserOpenOrder(long userId);
         Task<ProcessOrderDto> GetProcessOrder(long orderId);

@@ -44,6 +44,7 @@ namespace EShop.Application.Services.Implementations
             await _orderRepository.DisposeAsync();
         }
         #endregion
+
         public async Task<long> AddOrderForUser(long userId)
         {
             var order = await _orderRepository.GetQuery().FirstOrDefaultAsync(o => o.UserId == userId && o.OrderState == OrderState.Submitted);
@@ -225,11 +226,10 @@ namespace EShop.Application.Services.Implementations
                 TraceCode = data.PostCode,
                 OrderState = data.OrderState,
                 User = await _userRepository.GetEntityById(data.UserId),
-                OrderDetails = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == orderId).ToListAsync(),
+                OrderDetails = await _orderDetailRepository.GetQuery().Include(d=>d.ProductVariant).ThenInclude(v=>v.Product).Where(d => d.OrderId == orderId).ToListAsync(),
                 paymentRecord=await _recordRepository.GetQuery().FirstAsync(r=>long.Parse(r.invoice_id) ==orderId)
             };
         }
-
 
         public async Task ProcessOrder(ProcessOrderDto dto)
         {
@@ -274,6 +274,21 @@ namespace EShop.Application.Services.Implementations
 
             _orderRepository.EditEntity(order);
             await _orderRepository.SaveAsync();
+        }
+
+        public async Task<OpenOrderDto?> UserOpenOrderDetail(long userId)
+        {
+            var order= await _orderRepository.GetQuery().FirstOrDefaultAsync(d => d.UserId == userId && d.OrderState == OrderState.Submitted);
+            if (order == null) return null;
+            return new OpenOrderDto
+            {
+                User = await _userRepository.GetEntityById(userId),
+                Order = order,
+                OrderDetails = await _orderDetailRepository.GetQuery()
+                .Include(d=>d.ProductVariant)
+                .ThenInclude(v=>v.Product).Where(d=>d.OrderId==order.Id).ToListAsync()
+               
+            };
         }
     }
 }
