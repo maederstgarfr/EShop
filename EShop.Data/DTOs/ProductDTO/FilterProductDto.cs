@@ -14,6 +14,7 @@ namespace EShop.Data.DTOs.ProductDTO
         public string Title { get; set; }
         public long? BrandId { get; set; }
         public long? CategoryId { get; set; }
+        public string? CategoryUrl { get; set; }
         public long? ColorId { get; set; }
         public int? MostPrice { get; set; }
         public int? LeastPrice { get; set; }

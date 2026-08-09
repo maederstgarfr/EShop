@@ -22,7 +22,7 @@ namespace EShop.Data.DTOs.ProductDTO
         public string Description { get; set; }
         public string ShortDescription { get; set; }
 
-        public ProductSelectedBrand ProductSelectedBrand { get; set; }
+        public Brand ProductSelectedBrand { get; set; }
 
         
         public List<ProductSelectedCategory> SelectedCategories { get; set; }

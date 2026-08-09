@@ -450,7 +450,8 @@ namespace EShop.Application.Services.Implementations
         public async Task<FilterProductDto> FilterProduct(FilterProductDto filter)
         {
             #region Query
-            var query = _productRepository.GetQuery().Include(d => d.ProductVariants)
+            var query = _productRepository.GetQuery()
+                .Include(d => d.ProductVariants)
                 .Include(d => d.SelectedCategories)
                 .ThenInclude(d => d.Category)
                 .OrderByDescending(d => d.CreateDate).AsQueryable();
@@ -496,6 +497,10 @@ namespace EShop.Application.Services.Implementations
             if (!string.IsNullOrEmpty(filter.Title))
             {
                 query = query.Where(p => EF.Functions.Like(p.Title, $"{filter.Title }"));
+            }
+            if (!string.IsNullOrEmpty(filter.CategoryUrl))
+            {
+                query = query.Where(d => d.SelectedCategories.Any(s => s.Category.Url == filter.CategoryUrl));
             }
             #endregion
 
@@ -565,7 +570,7 @@ namespace EShop.Application.Services.Implementations
         public async Task<ProductDetailDto> ProductDetail(long productId)
         {
             var data = await _productRepository.GetEntityById(productId);
-            return new ProductDetailDto
+            var model= new ProductDetailDto
             {
                 Id = data.Id,
                 Title=data.Title,
@@ -579,8 +584,7 @@ namespace EShop.Application.Services.Implementations
                 ShortDescription=data.ShortDescription,
                 BasePrice=data.BasePrice,
                 ProductComments = await _commentRepository.GetQuery().Where(d => d.ProductId == productId).ToListAsync(),
-                ProductVariants=await _variantRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
-                ProductSelectedBrand = await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(d => d.ProductId == productId),        
+                ProductVariants=await _variantRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),       
                 SelectedCategories =await _selectedCategoryRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
                 ProductGalleries=await _galleryRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
                 ProductFeatures = await _featureRepository.GetQuery().Where(d=> d.ProductId==productId).ToListAsync(),
