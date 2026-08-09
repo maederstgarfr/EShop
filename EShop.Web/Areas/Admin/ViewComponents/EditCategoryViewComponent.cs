@@ -21,9 +21,9 @@ namespace EShop.Web.Areas.Admin.ViewComponents
             var category = await _productService.GetAllCategoriesForEdit(parentId, thisCategoryId);
             var model = new TreeViewCategoriesDto
             {
-                level = level,
-                productCategories = category,
-                thisCategoryId = thisCategoryId
+                Level = level,
+                ProductCategories = category,
+                ThisCategoryId = thisCategoryId
             };
             return View("EditCategory", model);
         }

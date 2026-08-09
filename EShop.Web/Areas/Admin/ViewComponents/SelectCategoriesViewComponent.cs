@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using EShop.Application.Services.Interfaces;
 using EShop.Data.DTOs.ProductCategoryDto;
@@ -8,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EShop.Web.Areas.Admin.ViewComponents
 {
-    public class SelectCategoryViewComponent : Controller
+    public class SelectCategoriesViewComponent : ViewComponent
     {
         private readonly IProductService _productService;
-        public SelectCategoryViewComponent(IProductService productService)
+        public SelectCategoriesViewComponent(IProductService productService)
         {
             _productService = productService;
         }
