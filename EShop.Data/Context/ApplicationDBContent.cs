@@ -30,7 +30,11 @@ namespace EShop.Data.Context
         public DbSet<ProductVariant> productVariants { get; set; }
         #endregion
 
-
+        #region Order
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<PaymentRecord> PaymentRecord { get; set; }
+        #endregion
         #region FilterData
         //یسری قوانین تعیین میشه
         //مثلا مواردی که حذف چند تایی هستند cascade مثلا هرجا که از اون محصول استفاده میشده اونا حذف میشه
@@ -69,15 +73,14 @@ namespace EShop.Data.Context
                 .HasQueryFilter(u => !u.IsDeleted);
             modelBuilder.Entity<OrderDetail>()
                 .HasQueryFilter(u => !u.IsDeleted);
+            modelBuilder.Entity<PaymentRecord>()
+               .HasQueryFilter(u => !u.IsDeleted);
 
         }
 
         #endregion
 
-        #region Order
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }
-        #endregion
+     
 
     }
 }
