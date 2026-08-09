@@ -21,8 +21,10 @@ namespace EShop.Web.Controllers
 
         #region Filter Products
         [HttpGet("product-list")]
-        public async Task<IActionResult> FilterProducts(FilterProductDto filter)
+        public async Task<IActionResult> FilterProducts(FilterProductDto filter,string? url)
         {
+            filter.TakeEntitiy = 6;
+            if (url != null) filter.CategoryUrl = url;
             var model = await _productService.FilterProduct(filter);
             ViewData["Colors"] = await _productService.GetAllProductColors();
             return View(model);
