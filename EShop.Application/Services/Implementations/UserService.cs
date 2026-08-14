@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using EShop.Application.Services.Interfaces;
 using EShop.Data.DTOs.Account;
 using EShop.Data.Entities.Account;
+using EShop.Data.Entities.OrderEntities;
 using EShop.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,16 +15,21 @@ namespace EShop.Application.Services.Implementations
         #region CTOR
         private readonly IGenericRepository<User> _userRepository;
         private readonly ISmsService _SmsService;
+        private readonly IGenericRepository<Order> _orderRepository;
 
-        public UserService(IGenericRepository<User> userRepository, ISmsService SmsService)
+
+        public UserService(IGenericRepository<User> userRepository, ISmsService SmsService, IGenericRepository<Order> orderRepository)
         {
             _userRepository = userRepository;
             _SmsService = SmsService;
+            _orderRepository = orderRepository;
 
         }
         public async ValueTask DisposeAsync()
         {
             await _userRepository.DisposeAsync();
+            await _orderRepository.DisposeAsync();
+
         }
 
         #endregion
@@ -141,6 +148,26 @@ namespace EShop.Application.Services.Implementations
         public async Task<User> GetUserByMobile(string mobile)
         {
             return await _userRepository.GetQuery().FirstOrDefaultAsync(u => u.MobileNumber == mobile);
+        }
+
+        public async Task<User> GetUserbyId(long userId)
+        {
+            return await _userRepository.GetEntityById(userId);
+        }
+
+        public async Task<UserDashboardDetailDto> UserDashboardDetail(long userId)
+        {
+            var orders = await _orderRepository.GetQuery().Where(o => o.UserId == userId)
+                 .ToListAsync();
+            return new UserDashboardDetailDto
+            {
+                User = await _userRepository.GetEntityById(userId),
+                CanceledOrderCount = orders.Count(o => o.OrderState == OrderState.Canceled),
+                PendingOrderCount = orders.Count(o => o.OrderState == OrderState.Pending),
+                ReturnedOrderCount = orders.Count(o => o.OrderState == OrderState.Returned),
+                SentOrderCount = orders.Count(o => o.OrderState == OrderState.Send),
+                PendingOrders = orders.Where(o => o.OrderState == OrderState.Pending).ToList()
+            };
         }
 
         #endregion

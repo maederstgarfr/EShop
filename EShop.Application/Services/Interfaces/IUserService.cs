@@ -9,6 +9,7 @@ namespace EShop.Application.Services.Interfaces
     {
         #region Register & login
         Task RegisterOrLoginUser(RegisterUserDTO dto);
+        Task<User> GetUserbyId(long userId);
         Task<bool> CheckUserExistByMobile(string mobile);
         Task<EditUserInfoDTO> GetEditUserDetail(long userId);
         Task EditUserDetail(EditUserInfoDTO dto);
@@ -16,6 +17,7 @@ namespace EShop.Application.Services.Interfaces
         Task<bool> SendActivationSMS(string mobile);
         Task<bool> CheckMobileAuthorization(MobileActivationDTO dto);
         Task<User> GetUserByMobile(string mobile);
+        Task<UserDashboardDetailDto> UserDashboardDetail(long userId);
 
         #endregion
     }
