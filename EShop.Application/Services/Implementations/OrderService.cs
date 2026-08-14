@@ -290,5 +290,17 @@ namespace EShop.Application.Services.Implementations
                
             };
         }
+
+        public async Task<Order> GetOrderById(long OrderId)
+        {
+            return await _orderRepository.GetEntityById(OrderId);
+        }
+
+        public async Task<int> GetOrderTotalPrice(long OrderId)
+        {
+            var detail = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == OrderId).ToListAsync();
+            return detail.Sum(d => d.Price * d.Count);
+        }
+    }
     }
 }

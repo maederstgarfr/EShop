@@ -12,8 +12,10 @@ namespace EShop.Application.Services.Interfaces
         Task<OpenOrderDto?> UserOpenOrderDetail(long userId);
         Task<FilterOrderDto> FilterOrders(FilterOrderDto filter);
         Task<Order?> GetUserOpenOrder(long userId);
+        Task<Order> GetOrderById(long OrderId);
+        Task<int> GetOrderTotalPrice(long OrderId);
         Task<ProcessOrderDto> GetProcessOrder(long orderId);
-        Task<long> AddOrderForUser(long userId);
+        Task<long> AddOrderForUser(long userId);    
         Task ProcessOrder(ProcessOrderDto dto);
         Task AddProductToOrder(SubmitOrderDetailDto dto);
         Task ChangeOrderDetailCount(long orderDetailId, int count);
