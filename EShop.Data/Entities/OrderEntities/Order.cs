@@ -35,6 +35,11 @@ namespace EShop.Data.Entities.OrderEntities
         [Display(Name = "ارسال شده")]
         Send,
         [Display(Name = "لغو شده")]
-        Canceled
+        Canceled,
+        [Display(Name = "مرجوع شده")]
+        Returned,
+        [Display(Name = "در حال پردازش")]
+        Pending
+
     }
 }

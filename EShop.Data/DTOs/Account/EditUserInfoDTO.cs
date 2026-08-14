@@ -10,14 +10,15 @@ namespace EShop.Data.DTOs.Account
     public class EditUserInfoDTO : CaptchaDTO
     {
         public long UserId { get; set; }
-        //قابلیت تغییر و وارد کردن اطلاعات برای ثبت سفارش
+        public bool ReturnToCheckout { get; set; }
+
         [Display(Name = "نام و نام خانوادگی")]
         [Required(ErrorMessage = "لطفا {.} را وارد کنید")]
-        [MaxLength(200, ErrorMessage = "{نمیتواند بیشتر از {1} کاراکتر باشد {0")]
+        [MaxLength(150, ErrorMessage = "{نمیتواند بیشتر از {1} کاراکتر باشد {0")]
         public string FullName { get; set; }
 
         [Display(Name = "ایمیل")]
-        [MaxLength(200, ErrorMessage = "{نمیتواند بیشتر از {1} کاراکتر باشد {0")]
+        [MaxLength(100, ErrorMessage = "{نمیتواند بیشتر از {1} کاراکتر باشد {0")]
         public string? Email { get; set; }
 
         [Display(Name = "آدرس")]
@@ -30,5 +31,7 @@ namespace EShop.Data.DTOs.Account
         [MaxLength(10, ErrorMessage = "{نمیتواند بیشتر از {1} کاراکتر باشد {0")]
         [MinLength(10, ErrorMessage = "{نمیتواند کمتر از {1} کاراکتر باشد {0")]
         public string PostCode { get; set; }
+
+        public string UserCity { get; set; }
     }
 }
