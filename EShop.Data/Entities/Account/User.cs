@@ -16,5 +16,6 @@ namespace EShop.Data.Entities.Account
         public string? Email { get; set; }
         public string? Address { get; set; }
         public string? PostCode { get; set; }
+        public string? UserCity { get; set; }
     }
 }
