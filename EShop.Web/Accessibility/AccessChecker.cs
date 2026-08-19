@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EShop.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace EShop.Web.Accessibility
 {
-    public class AccessChecker
+    public class AccessChecker : AuthorizeAttribute, IAuthorizationFilter
     {
         #region constractor
         private IPermissionService _permissionService;
