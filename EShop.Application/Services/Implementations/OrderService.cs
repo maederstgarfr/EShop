@@ -51,7 +51,8 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<long> AddOrderForUser(long userId)
         {
-            var order = await _orderRepository.GetQuery().FirstOrDefaultAsync(o => o.UserId == userId && o.OrderState == OrderState.Submitted);
+            var order = await _orderRepository.GetQuery()
+                .FirstOrDefaultAsync(o => o.UserId == userId && o.OrderState == OrderState.Submitted);
             if (order != null) return order.Id;    
             
             var newOrder = new Order
@@ -120,6 +121,7 @@ namespace EShop.Application.Services.Implementations
         {
             #region Query
             var query = _orderRepository.GetQuery().Include(o => o.OrderDetails)
+                .Where(o => o.OrderState != OrderState.Submitted)
                 .OrderByDescending(d => d.CreateDate)
                 .AsQueryable();
             #endregion
@@ -138,6 +140,12 @@ namespace EShop.Application.Services.Implementations
                 case FilterOrderState.Send:
                     query = query.Where(d => d.OrderState == OrderState.Send);
                     break;
+                case FilterOrderState.Returned:
+                    query = query.Where(d => d.OrderState == OrderState.Returned);
+                    break;
+                case FilterOrderState.Pending:
+                    query = query.Where(d => d.OrderState == OrderState.Pending);
+                    break;
                 case FilterOrderState.Canceled:
                     query = query.Where(d => d.OrderState == OrderState.Canceled);
                     break;
@@ -145,7 +153,7 @@ namespace EShop.Application.Services.Implementations
                     throw new NotImplementedException();
             }
 
-            #endregion
+            #endregion           
 
             #region Filters
             #region String
@@ -302,8 +310,15 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<int> GetOrderTotalPrice(long OrderId)
         {
-            var detail = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == OrderId).ToListAsync();
-            return detail.Sum(d => d.Price * d.Count);
+            var detail = await _orderDetailRepository.GetQuery()
+               .Include(od => od.ProductVariant)
+               .ThenInclude(v => v.Product)
+               .Where(d => d.OrderId == OrderId)
+               .ToListAsync();
+            var totalPrice = detail.Select(item => (item.ProductVariant.Product.BasePrice + item.ProductVariant.Price) * item.Count)
+                .Aggregate(0, (current, price) => current + price);
+
+            return totalPrice;
         }
 
         public async Task<OpenOrderDto> UserOpenOrderDetail(long userId)
