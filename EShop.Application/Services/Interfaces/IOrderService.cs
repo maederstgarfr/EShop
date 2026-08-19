@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Eshop.Data.DTOs.PaymentDto;
+using EShop.Data.DTOs.PaymentDto;
 using EShop.Data.DTOs.OrderDto;
 using EShop.Data.Entities.OrderEntities;
 
@@ -13,6 +13,7 @@ namespace EShop.Application.Services.Interfaces
         Task<FilterOrderDto> FilterOrders(FilterOrderDto filter);
         Task<Order?> GetUserOpenOrder(long userId);
         Task<Order> GetOrderById(long OrderId);
+        Task<int> UpdateOrderDetailPrices(long orderId);
         Task<int> GetOrderTotalPrice(long OrderId);
         Task<ProcessOrderDto> GetProcessOrder(long orderId);
         Task<long> AddOrderForUser(long userId);    

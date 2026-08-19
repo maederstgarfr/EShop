@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Eshop.Data.DTOs.PaymentDto;
+using EShop.Data.DTOs.PaymentDto;
 using EShop.Application.Services.Interfaces;
 using EShop.Data.DTOs.OrderDto;
 using EShop.Data.DTOs.Paging;
@@ -22,26 +22,30 @@ namespace EShop.Application.Services.Implementations
         private readonly IGenericRepository<Order> _orderRepository;
         private readonly IGenericRepository<OrderDetail> _orderDetailRepository;
         private readonly IGenericRepository<Product> _productRepository;
-        private readonly IGenericRepository<ProductVariant> _variantrRepository;
+        private readonly IGenericRepository<ProductVariant> _variantRepository;
         private readonly IGenericRepository<PaymentRecord> _recordRepository;
-        public OrderService(IGenericRepository<User> userRepository, IGenericRepository<Order> orderRepository, IGenericRepository<OrderDetail> orderDetailRepository, IGenericRepository<Product> productRepository, IGenericRepository<ProductVariant> variantrRepository, IGenericRepository<PaymentRecord> recordRepository)
+
+
+        public OrderService(IGenericRepository<User> userRepository, IGenericRepository<Order> orderRepository, IGenericRepository<OrderDetail> orderDetailRepository, IGenericRepository<Product> productRepository, IGenericRepository<ProductVariant> variantRepository, IGenericRepository<PaymentRecord> recordRepository)
         {
             _userRepository = userRepository;
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository;
             _productRepository = productRepository;
-            _variantrRepository = variantrRepository;
+            _variantRepository = variantRepository;
             _recordRepository = recordRepository;
-
+            
         }
+
         public async ValueTask DisposeAsync()
         {
             await _userRepository.DisposeAsync();
-            await _orderRepository.DisposeAsync();
             await _orderDetailRepository.DisposeAsync();
-            await _productRepository.DisposeAsync();
-            await _variantrRepository.DisposeAsync();
             await _orderRepository.DisposeAsync();
+            await _productRepository.DisposeAsync();
+            await _variantRepository.DisposeAsync();
+            await _recordRepository.DisposeAsync();
+         
         }
         #endregion
 
@@ -74,7 +78,7 @@ namespace EShop.Application.Services.Implementations
                 await _orderDetailRepository.SaveAsync();
             }
              
-            var variant = await _variantrRepository.GetEntityById(dto.ProductVariantId);
+            var variant = await _variantRepository.GetEntityById(dto.ProductVariantId);
             var product = await _productRepository.GetEntityById(variant.ProductId);
             var orderDetail = new OrderDetail
             {
@@ -266,30 +270,30 @@ namespace EShop.Application.Services.Implementations
             await _recordRepository.AddEntity(record);
             await _recordRepository.SaveAsync();
             #endregion
+            var order = await _orderRepository.GetQuery().Include(o => o.OrderDetails)
+               .ThenInclude(d => d.ProductVariant).FirstAsync(o => o.Id == long.Parse(dto.invoice_id));
 
-            var order = await _orderRepository.GetEntityById(long.Parse(dto.invoice_id));
+            #region Update Order
+            var user = await _userRepository.GetEntityById(order.UserId);
+            order.Address = user.Address;
+            order.PostCode = user.PostCode;
+            order.DestinationCity = user.UserCity;
+            order.UserName = user.FullName;
             order.OrderState = OrderState.Paid;
-            order.paymentDate = DateTime.Now;
+            //order.PaymentDate = dateTime;
             order.PaymentRecordId = record.Id;
+            //order.BankTraceCode = dto.ref_id;
+
+            var totalPrice = order.OrderDetails.Select(item => (item.ProductVariant.Product.BasePrice + item.ProductVariant.Price) * item.Count)
+                .Aggregate(0, (current, price) => current + price);
+            order.TotalPrice = totalPrice;
 
             _orderRepository.EditEntity(order);
             await _orderRepository.SaveAsync();
+            #endregion
         }
 
-        public async Task<OpenOrderDto?> UserOpenOrderDetail(long userId)
-        {
-            var order= await _orderRepository.GetQuery().FirstOrDefaultAsync(d => d.UserId == userId && d.OrderState == OrderState.Submitted);
-            if (order == null) return null;
-            return new OpenOrderDto
-            {
-                User = await _userRepository.GetEntityById(userId),
-                Order = order,
-                OrderDetails = await _orderDetailRepository.GetQuery()
-                .Include(d=>d.ProductVariant)
-                .ThenInclude(v=>v.Product).Where(d=>d.OrderId==order.Id).ToListAsync()
-               
-            };
-        }
+       
 
         public async Task<Order> GetOrderById(long OrderId)
         {
@@ -301,6 +305,44 @@ namespace EShop.Application.Services.Implementations
             var detail = await _orderDetailRepository.GetQuery().Where(d => d.OrderId == OrderId).ToListAsync();
             return detail.Sum(d => d.Price * d.Count);
         }
-    }
-    }
+
+        public async Task<OpenOrderDto> UserOpenOrderDetail(long userId)
+        {
+            var order = await _orderRepository.GetQuery().FirstOrDefaultAsync(d => d.UserId == userId && d.OrderState == OrderState.Submitted);
+            if (order == null) return null;
+            return new OpenOrderDto
+            {
+                User = await _userRepository.GetEntityById(userId),
+                Order = order,
+                OrderDetails = await _orderDetailRepository.GetQuery()
+                .Include(d => d.ProductVariant)
+                .ThenInclude(v => v.Product).Where(d => d.OrderId == order.Id).ToListAsync()
+
+            };
+        }
+
+        public async Task<int> UpdateOrderDetailPrices(long orderId)
+        {
+            var order = await _orderRepository.GetQuery()
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.ProductVariant)
+                .FirstAsync(o => o.Id == orderId);
+
+            foreach (var item in order.OrderDetails)
+            {
+                var product = await _productRepository.GetEntityById(item.ProductVariant.ProductId);
+                var variant = await _variantRepository.GetEntityById(item.ProductVariantId);
+
+                item.TotalPrice = (product.BasePrice + item.ProductVariant.Price) * item.Count;
+                item.ProductPrice = product.BasePrice;
+                item.VariantPrice = variant.Price;
+                _orderDetailRepository.EditEntity(item);
+            }
+
+            await _orderDetailRepository.SaveAsync();
+
+            return order.OrderDetails.Select(item => (item.ProductVariant.Product.BasePrice + item.ProductVariant.Price) * item.Count).Aggregate(0, (current, price) => current + price);
+
+        }
+    }    
 }
