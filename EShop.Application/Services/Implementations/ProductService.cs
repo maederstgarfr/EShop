@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EShop.Application.extentions;
 using EShop.Application.Services.Interfaces;
 using EShop.Application.Utils;
 using EShop.Data.DTOs.Paging;
 using EShop.Data.DTOs.ProductCategoryDto;
-using EShop.Data.DTOs.ProductDTO;
+using EShop.Data.DTOs.ProductDto;
 using EShop.Data.Entities.OrderEntities;
 using EShop.Data.Entities.ProductEntities;
 using EShop.Data.Repository;
@@ -326,6 +325,7 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<EditProductDto> EditProduct(long productId)
         {
+
             var brand = await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(d=> d.ProductId == productId);
             var data = await _productRepository.GetEntityById(productId);
 
@@ -348,42 +348,65 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<EditProductResult> EditProduct(EditProductDto dto)
         {
+            #region Edit Product
             var product = await _productRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == dto.ProductId);
             if (product == null) return EditProductResult.Error;
+
+            var convertedPrice = int.Parse(dto.BasePrice.Replace(",", ""));
 
             product.Title = dto.Title;
             product.Description = dto.Description;
             product.ShortDescription = dto.ShortDescription;
-            product.IsAvailable = dto.IsAvailabe;
+            product.IsAvailable = dto.IsAvailable;
+            product.BasePrice = convertedPrice;
 
             #region Brand
-            if (dto.BrandId != null)
+            switch (dto.BrandId)
             {
-                var brand = await _brandRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == dto.BrandId);
-                if (brand == null) return EditProductResult.BrandNotFound;
+                case > 0:
+                    {
+                        var brand = await _brandRepository.GetQuery().FirstOrDefaultAsync(d => d.Id == dto.BrandId);
+                        if (brand == null) return EditProductResult.BrandNotFound;
 
-                var oldBrand = await _selectedBrandRepository.GetEntityById((long) dto.BrandId);
-                await _selectedBrandRepository.DeletePermanent(oldBrand);
+                        var oldBrand = await _selectedBrandRepository.GetQuery().FirstOrDefaultAsync(b => b.ProductId == product.Id);
+                        if (oldBrand != null)
+                        {
+                            await _selectedBrandRepository.DeletePermanent(oldBrand);
+                        }
 
-                var newBrand = new ProductSelectedBrand
-                {
-                    Product = product,
-                    Brand = brand,
-                    BrandId=brand.Id,
-                    ProductId=dto.ProductId
-                };
-                await _selectedBrandRepository.AddEntity(newBrand);
-                await _selectedBrandRepository.SaveAsync();
+                        var newBrand = new ProductSelectedBrand
+                        {
+                            Product = product,
+                            Brand = brand,
+                            BrandId = brand.Id,
+                            ProductId = dto.ProductId
+                        };
+                        await _selectedBrandRepository.AddEntity(newBrand);
+                        await _selectedBrandRepository.SaveAsync();
+                        break;
+                    }
+                case 0:
+                    {
+                        var selectedBrand = await _selectedBrandRepository.GetQuery()
+                            .FirstOrDefaultAsync(b => b.ProductId == product.Id);
+
+                        if (selectedBrand != null)
+                        {
+                            await _selectedBrandRepository.DeletePermanent(selectedBrand);
+                            await _selectedBrandRepository.SaveAsync();
+                        }
+                        break;
+                    }
             }
             #endregion
 
             #region Category
-            await RemoveProductSelectedCategories(dto.ProductId);
-            var productCategoryresult=  await AddProductSelectedCategories(dto.Categories, dto.ProductId);
-            if (!productCategoryresult) return EditProductResult.CategorynotFound;
+            await _categoryService.RemoveProductSelectedCategories(dto.ProductId);
+            var addCategoryResult = await _categoryService.AddProductSelectedCategories(dto.Categories, dto.ProductId);
+            if (!addCategoryResult) return EditProductResult.CategoryNotFound;
             #endregion
-            
-            if(dto.MainImage != null)
+
+            if (dto.MainImage != null)
             {
                 #region Main Image
                 var mainImageName = Guid.NewGuid().ToString("N") + Path.GetExtension(dto.MainImage.FileName);
