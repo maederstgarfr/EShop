@@ -269,7 +269,14 @@ namespace EShop.Application.Services.Implementations
 
         public async Task<bool> DeleteCategory(long categoryId)
         {
-            
+            #region Delete category if it is in cache
+            var cachedCategories = _cache.Get<List<CategoryItemDto>>("MainCategories");
+            if (cachedCategories != null)
+            {
+                cachedCategories = cachedCategories.Where(c => c.CategoryId != categoryId).ToList();
+                _cache.Set("MainCategories", cachedCategories, TimeSpan.FromDays(1));
+            }
+            #endregion
 
             #region Delete Category
             var categoryInUse = await _selectedCategoryRepository.GetQuery()
@@ -287,10 +294,7 @@ namespace EShop.Application.Services.Implementations
             return true;
         }
 
-        Task<List<CategoryItemDto>> ICategoryService.GetProductsCategoryForHome()
-        {
-            throw new NotImplementedException();
-        }
+     
         #endregion
     }
 }

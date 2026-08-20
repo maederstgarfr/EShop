@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EShop.Data.DTOs.CommonDto;
 using EShop.Data.DTOs.ProductCategoryDto;
 using EShop.Data.Entities.ProductEntities;
 
